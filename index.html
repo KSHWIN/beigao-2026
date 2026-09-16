@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 TBA 一日北高 — 騎行計畫</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --bg:      #f0f5fb;
+  --surface: #ffffff;
+  --card:    #f8fafc;
+  --border:  #e2e8f0;
+  --border2: #cbd5e1;
+  --text:    #0f172a;
+  --text2:   #475569;
+  --text3:   #94a3b8;
+  --sky:     #0284c7;
+  --sky-bg:  #e0f2fe;
+  --green:   #16a34a;
+  --green-bg:#dcfce7;
+  --amber:   #d97706;
+  --amber-bg:#fef3c7;
+  --rose:    #dc2626;
+  --rose-bg: #fee2e2;
+  --indigo:  #4f46e5;
+  --shadow:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow2: 0 4px 12px rgba(0,0,0,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0c4a6e 100%);
+  padding: 36px 20px 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 24px;
+  background: var(--bg);
+  border-radius: 24px 24px 0 0;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #7dd3fc;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  padding: 4px 12px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  font-family: 'Bebas Neue', 'Noto Sans TC', sans-serif;
+  font-size: clamp(56px, 15vw, 84px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.hero h1 span { color: #38bdf8; }
+.hero-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.hero-meta-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.hero-meta-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.hero-meta-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.hero-meta-value.sky   { color: #38bdf8; }
+.hero-meta-value.green { color: #86efac; }
+.hero-meta-value.amber { color: #fcd34d; }
+
+/* ── TEAM ── */
+.team-section {
+  padding: 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--sky);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.team-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.team-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--sky-bg);
+  border: 2px solid var(--sky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  font-size: 20px;
+}
+.team-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; color: var(--text); }
+.team-role { font-size: 10px; color: var(--text3); }
+
+/* ── NAV ── */
+.nav-tabs {
+  display: flex;
+  padding: 10px 12px;
+  gap: 8px;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.09);
+}
+.nav-tab {
+  flex: 1;
+  padding: 14px 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text3);
+  cursor: pointer;
+  border-radius: 10px;
+  white-space: nowrap;
+  transition: all 0.18s;
+  text-decoration: none;
+  text-align: center;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+}
+.nav-tab:hover {
+  color: var(--sky);
+  border-color: var(--sky);
+  background: var(--sky-bg);
+}
+.nav-tab.active {
+  color: #fff;
+  background: var(--sky);
+  border-color: var(--sky);
+  box-shadow: 0 3px 10px rgba(2,132,199,0.35);
+}
+
+/* ── SECTIONS ── */
+.section { display: none; padding: 24px 20px; background: var(--bg); }
+.section.active { display: block; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.alert-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid var(--amber);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #92400e;
+  margin-bottom: 16px;
+}
+
+/* ── MAP ── */
+#routeMap {
+  height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow2);
+  margin-bottom: 20px;
+}
+.map-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── ROUTE TABLE ── */
+.route-table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.route-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.route-table th {
+  background: var(--card);
+  padding: 10px 10px;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.route-table td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.route-table tr:last-child td { border-bottom: none; }
+.route-table tr.row-cp   { background: #f0fdf4; }
+.route-table tr.row-start{ background: #fff1f2; }
+.route-table tr.row-end  { background: #eff6ff; }
+
+.station-name { font-weight: 700; color: var(--text); line-height: 1.3; }
+.station-sub  { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+.km-big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.km-seg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text3);
+  display: block;
+}
+.time-main {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+}
+.time-depart {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text3);
+  display: block;
+}
+.rest-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.rest-tag.min { background: var(--amber-bg); color: var(--amber); }
+.rest-tag.big { background: #fef3c7; color: #92400e; font-weight: 700; }
+.rest-tag.none { color: var(--text3); }
+
+.type-badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.type-badge.start { background: var(--rose-bg);   color: var(--rose); }
+.type-badge.cp    { background: var(--green-bg);  color: var(--green); }
+.type-badge.stop  { background: var(--amber-bg);  color: var(--amber); }
+.type-badge.end   { background: var(--sky-bg);    color: var(--sky); }
+
+/* progress bar in table */
+.dist-bar-wrap { margin-top: 4px; height: 3px; background: var(--border); border-radius: 2px; width: 60px; }
+.dist-bar      { height: 100%; border-radius: 2px; background: var(--sky); }
+
+/* ── GEAR CHECKLIST ── */
+.checklist-cat { margin-bottom: 20px; }
+.cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cat-name { font-size: 14px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; }
+.cat-prog { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--sky); }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 10px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--sky); border-radius: 2px; transition: width 0.3s ease; }
+
+.gear-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  box-shadow: var(--shadow);
+}
+.gear-item:hover { border-color: var(--sky); }
+.gear-item.done { opacity: 0.5; background: var(--card); box-shadow: none; }
+.gear-item.done .gear-name { text-decoration: line-through; }
+
+.checkbox {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border2);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.15s;
+  background: white;
+}
+.gear-item.done .checkbox { background: var(--sky); border-color: var(--sky); }
+.checkbox svg { display: none; }
+.gear-item.done .checkbox svg { display: block; }
+.gear-body { flex: 1; }
+.gear-name { font-size: 16px; font-weight: 600; color: var(--text); }
+.gear-note { font-size: 13px; color: var(--text3); margin-top: 3px; line-height: 1.45; }
+.badge {
+  font-size: 11px; padding: 3px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0; margin-top: 2px; letter-spacing: 0.04em; font-weight: 700;
+}
+.badge.have    { background: var(--green-bg); color: var(--green); }
+.badge.tbd     { background: var(--amber-bg); color: var(--amber); }
+.badge.urgent  { background: var(--rose-bg);  color: var(--rose);  }
+
+/* ── TRAINING ── */
+.train-week {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+.train-week.key      { border-left: 3px solid var(--sky); }
+.train-week.taper    { border-left: 3px solid var(--amber); }
+.train-week.raceweek { border-left: 3px solid var(--green); }
+
+.tw-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+.tw-label  { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text3); letter-spacing: 0.05em; margin-bottom: 3px; }
+.tw-title  { font-size: 17px; font-weight: 700; color: var(--text); }
+.tw-km     { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--sky); white-space: nowrap; font-weight: 700; }
+.tw-detail { font-size: 14px; color: var(--text2); line-height: 1.75; }
+.tw-detail strong { color: var(--text); }
+
+/* ── NUTRITION ── */
+.nutr-phase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--sky);
+  border-radius: 0 12px 12px 0;
+  padding: 13px 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+.nutr-phase.night  { border-left-color: #6366f1; }
+.nutr-phase.dawn   { border-left-color: var(--amber); }
+.nutr-phase.noon   { border-left-color: var(--rose); }
+.nutr-phase.finish { border-left-color: var(--green); }
+.nutr-range { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text3); margin-bottom: 3px; letter-spacing: 0.05em; }
+.nutr-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.nutr-items { list-style: none; }
+.nutr-items li { font-size: 14px; color: var(--text2); padding: 4px 0 4px 18px; position: relative; line-height: 1.55; }
+.nutr-items li::before { content: '→'; position: absolute; left: 0; color: var(--text3); }
+.nutr-items li strong { color: var(--text); }
+
+/* supplement table */
+.supp-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow); }
+.supp-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.supp-table th { text-align: left; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid var(--border); background: var(--card); }
+.supp-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.supp-table td:first-child { color: var(--text); font-weight: 600; }
+.supp-table tr:last-child td { border-bottom: none; }
+
+/* ── TIPS ── */
+.tip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.tip-card.warn { border-color: #fde68a; background: #fffbeb; }
+.tip-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--text); }
+.tip-body { font-size: 14px; color: var(--text2); line-height: 1.75; }
+.tip-body strong { color: var(--text); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 20px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  line-height: 1.8;
+}
+
+/* Mobile table: hide less critical columns */
+@media (max-width: 440px) {
+  .route-table .col-elapsed { display: none; }
+}
+@media (min-width: 480px) {
+  .hero-meta { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="hero-badge">2026 TBA · 單車挑戰</div>
+  <h1>一日<span>北高</span></h1>
+  <p class="hero-sub">台北 → 高雄 · 360 公里 · 18H 完賽挑戰</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">日期</div>
+      <div class="hero-meta-value">11月第二週</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">出發</div>
+      <div class="hero-meta-value sky">23:00</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">目標完賽</div>
+      <div class="hero-meta-value green">16:00</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">關門時間</div>
+      <div class="hero-meta-value amber">20小時</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── TEAM ── -->
+<section class="team-section">
+  <div class="section-label">— 本次成員</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">騎行陣型：前 → 中 → 後</div>
+  <div class="team-grid">
+    <div class="team-card" style="border-top:3px solid var(--sky);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sky);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">① 前車</div>
+      <div class="team-avatar">💨</div>
+      <div class="team-name" style="font-size:18px;">俏屁</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">帶頭領騎</div>
+    </div>
+    <div class="team-card" style="border-top:3px solid var(--amber);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">② 中車</div>
+      <div class="team-avatar" style="border-color:var(--amber);background:#fef3c7;">🔧</div>
+      <div class="team-name" style="font-size:18px;">黑輪</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">中間壓陣</div>
+    </div>
+    <div class="team-card" style="border-top:3px solid var(--green);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">③ 後車</div>
+      <div class="team-avatar" style="border-color:var(--green);background:#dcfce7;">🧢</div>
+      <div class="team-name" style="font-size:18px;">凱勝</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">收尾 & 協調</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NAV ── -->
+<nav class="nav-tabs" id="nav">
+  <a class="nav-tab active" href="#route">📍 路線</a>
+  <a class="nav-tab" href="#gear">🎒 裝備</a>
+  <a class="nav-tab" href="#training">📈 訓練</a>
+  <a class="nav-tab" href="#nutrition">⚡ 補給</a>
+  <a class="nav-tab" href="#tips">💡 提醒</a>
+</nav>
+
+<!-- ── ROUTE ── -->
+<section id="route" class="section active">
+  <div class="section-label">— 路線地圖</div>
+  <h2 class="section-title">補給點與路線</h2>
+
+  <div class="alert-box">⚠️ 補給車確切停靠地址 TBD，確認後填入各站點</div>
+
+  <!-- MAP -->
+  <div id="routeMap"></div>
+
+  <div class="map-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div> 起點</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div> 官方檢查點</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div> 補給站</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#0284c7"></div> 終點</div>
+  </div>
+
+  <!-- ROUTE TABLE -->
+  <div class="section-label" style="margin-top:8px;">— 時間 & 里程數據（18H 均速25）</div>
+  <div class="route-table-wrap">
+    <table class="route-table">
+      <thead>
+        <tr>
+          <th>站點</th>
+          <th>公里</th>
+          <th>到站</th>
+          <th>休息</th>
+          <th>出發</th>
+          <th>類型</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-start">
+          <td>
+            <div class="station-name">八里訊塘廣場</div>
+            <div class="station-sub">北高正式起點</div>
+          </td>
+          <td>
+            <div class="km-big">0K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:0%"></div></div>
+          </td>
+          <td><div class="time-main" style="color:#dc2626">23:00</div></td>
+          <td><span class="rest-tag none">—</span></td>
+          <td><div class="time-main" style="color:#dc2626">23:00</div></td>
+          <td><span class="type-badge start">起點</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">台61縣&台15縣交界</div>
+          </td>
+          <td>
+            <div class="km-big">15K</div>
+            <div class="km-seg">+15K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:4%"></div></div>
+          </td>
+          <td><div class="time-main">23:36</div><div class="time-depart">+0:36</div></td>
+          <td><span class="rest-tag min">~15min</span></td>
+          <td><div class="time-main">23:51</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr class="row-cp">
+          <td>
+            <div class="station-name">風情海岸</div>
+            <div class="station-sub">第二官方檢查點</div>
+          </td>
+          <td>
+            <div class="km-big">71K</div>
+            <div class="km-seg">+56K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:20%"></div></div>
+          </td>
+          <td><div class="time-main" style="color:#16a34a">02:00</div><div class="time-depart">+3:00</div></td>
+          <td><span class="rest-tag min">15min</span></td>
+          <td><div class="time-main">02:15</div></td>
+          <td><span class="type-badge cp">CP2 ✓</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">7-11 通樹門市</div>
+          </td>
+          <td>
+            <div class="km-big">118K</div>
+            <div class="km-seg">+47K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:33%"></div></div>
+          </td>
+          <td><div class="time-main">04:10</div><div class="time-depart">+5:10</div></td>
+          <td><span class="rest-tag min">15min</span></td>
+          <td><div class="time-main">04:25</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">7-11 廣治門市</div>
+          </td>
+          <td>
+            <div class="km-big">155.5K</div>
+            <div class="km-seg">+37.5K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:43%"></div></div>
+          </td>
+          <td><div class="time-main">05:55</div><div class="time-depart">+6:55</div></td>
+          <td><span class="rest-tag min">15min</span></td>
+          <td><div class="time-main">06:10</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr class="row-cp">
+          <td>
+            <div class="station-name">王功福海宮</div>
+            <div class="station-sub">第三官方檢查點｜彰化</div>
+          </td>
+          <td>
+            <div class="km-big">190K</div>
+            <div class="km-seg">+34.5K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:53%"></div></div>
+          </td>
+          <td><div class="time-main" style="color:#16a34a">07:46</div><div class="time-depart">+8:46</div></td>
+          <td><span class="rest-tag none">打卡繼續</span></td>
+          <td><div class="time-main">07:46</div></td>
+          <td><span class="type-badge cp">CP3 ✓</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">7-11 新芳林桿門市</div>
+          </td>
+          <td>
+            <div class="km-big">193K</div>
+            <div class="km-seg">+3K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:54%"></div></div>
+          </td>
+          <td><div class="time-main">07:52</div><div class="time-depart">+8:52</div></td>
+          <td><span class="rest-tag min">15min</span></td>
+          <td><div class="time-main">08:07</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">全家 口湖下崙門市</div>
+            <div class="station-sub">雲林</div>
+          </td>
+          <td>
+            <div class="km-big">234K</div>
+            <div class="km-seg">+41K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:65%"></div></div>
+          </td>
+          <td><div class="time-main">09:45</div><div class="time-depart">+10:45</div></td>
+          <td><span class="rest-tag big">★大休30min</span></td>
+          <td><div class="time-main">10:15</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">北門南鯤鯓門市</div>
+            <div class="station-sub">台南</div>
+          </td>
+          <td>
+            <div class="km-big">283K</div>
+            <div class="km-seg">+49K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:79%"></div></div>
+          </td>
+          <td><div class="time-main">12:00</div><div class="time-depart">+13:00</div></td>
+          <td><span class="rest-tag big">★大休30min</span></td>
+          <td><div class="time-main">12:30</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr class="row-cp">
+          <td>
+            <div class="station-name">將軍吉女宮</div>
+            <div class="station-sub">第四官方檢查點｜台南</div>
+          </td>
+          <td>
+            <div class="km-big">292K</div>
+            <div class="km-seg">+9K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:81%"></div></div>
+          </td>
+          <td><div class="time-main" style="color:#16a34a">12:55</div><div class="time-depart">+13:55</div></td>
+          <td><span class="rest-tag none">打卡繼續</span></td>
+          <td><div class="time-main">12:55</div></td>
+          <td><span class="type-badge cp">CP4 ✓</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="station-name">興達港情人碼頭</div>
+            <div class="station-sub">高雄茄萣</div>
+          </td>
+          <td>
+            <div class="km-big">324K</div>
+            <div class="km-seg">+32K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:90%"></div></div>
+          </td>
+          <td><div class="time-main">14:10</div><div class="time-depart">+15:10</div></td>
+          <td><span class="rest-tag min">15min</span></td>
+          <td><div class="time-main">14:25</div></td>
+          <td><span class="type-badge stop">補給</span></td>
+        </tr>
+
+        <tr class="row-end">
+          <td>
+            <div class="station-name">高雄屏山國小</div>
+            <div class="station-sub">🏁 北高終點！</div>
+          </td>
+          <td>
+            <div class="km-big">360K</div>
+            <div class="km-seg">+36K</div>
+            <div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:#0284c7"></div></div>
+          </td>
+          <td><div class="time-main" style="color:#0284c7">16:00</div><div class="time-depart">+17:00</div></td>
+          <td><span class="rest-tag none">完賽！</span></td>
+          <td><div class="time-main" style="color:#0284c7">🎉</div></td>
+          <td><span class="type-badge end">終點</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Stats summary -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--sky)">360</div>
+      <div style="font-size:13px;color:var(--text3)">總公里數</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--green)">4</div>
+      <div style="font-size:13px;color:var(--text3)">官方檢查點</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--amber)">≈2.5h</div>
+      <div style="font-size:13px;color:var(--text3)">累計休息</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GEAR ── -->
+<section id="gear" class="section">
+  <div class="section-label">— 備品清單</div>
+  <h2 class="section-title">裝備 Checklist</h2>
+  <p style="font-size:14px;color:var(--text3);margin-bottom:16px;">點擊項目勾選，進度存在你的裝置，不影響其他人。</p>
+
+  <!-- Night -->
+  <div class="checklist-cat" data-cat="night" data-total="6">
+    <div class="cat-header">
+      <div class="cat-name">🌙 夜間安全（最高優先）</div>
+      <div class="cat-prog" id="prog-night">0 / 6</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="bar-night" style="width:0%"></div></div>
+    <div class="gear-item" data-id="light-front-main" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">前燈（主燈）</div><div class="gear-note">1000 流明以上，可連續 6 小時以上</div></div>
+      <div class="badge tbd">TBD</div>
+    </div>
+    <div class="gear-item" data-id="light-front-backup" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">前燈（備用）或行動電源備充</div><div class="gear-note">23:00 出發，天亮前全程黑暗</div></div>
+      <div class="badge tbd">TBD</div>
+    </div>
+    <div class="gear-item" data-id="light-rear" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">後閃燈（每台車都要）</div><div class="gear-note">夜騎被追撞是最大危險</div></div>
+      <div class="badge tbd">TBD</div>
+    </div>
+    <div class="gear-item" data-id="hl100" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">Forclaz HL100 USB 頭燈（備用）</div><div class="gear-note">省電模式續航 17 小時，NT$349，迪卡儂購入。戴在安全帽或頭上，FL03 沒電可立刻接力</div></div>
+      <div class="badge tbd">待買</div>
+    </div>
+    <div class="gear-item" data-id="reflect" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">反光背心或反光條</div><div class="gear-note">台61線路肩，大車車速快</div></div>
+    </div>
+    <div class="gear-item" data-id="powerbank" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">行動電源 + 充電線</div><div class="gear-note">碼表、前燈、手機備充</div></div>
+    </div>
+  </div>
+
+  <!-- Riding -->
+  <div class="checklist-cat" data-cat="ride" data-total="7">
+    <div class="cat-header">
+      <div class="cat-name">🚴 騎乘裝備</div>
+      <div class="cat-prog" id="prog-ride">0 / 7</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="bar-ride" style="width:0%"></div></div>
+    <div class="gear-item done" data-id="helmet" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">安全帽</div></div>
+      <div class="badge have">已有</div>
+    </div>
+    <div class="gear-item done" data-id="computer" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">碼表</div></div>
+      <div class="badge have">已有</div>
+    </div>
+    <div class="gear-item done" data-id="shoes" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">車鞋（目前款）</div></div>
+      <div class="badge have">已有</div>
+    </div>
+    <div class="gear-item" data-id="f300" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body">
+        <div class="gear-name">F300 自行車鞋</div>
+        <div class="gear-note">平底硬底、走路無聲，三人各自評估是否選購</div>
+      </div>
+      <div class="badge tbd">各自評估</div>
+    </div>
+    <div class="gear-item" data-id="gloves" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">騎乘手套</div><div class="gear-note">長途手掌會麻，建議有護墊款</div></div>
+    </div>
+    <div class="gear-item" data-id="sleeve" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">袖套 + 輕量防風外套</div><div class="gear-note">11月西海岸凌晨涼意，下坡穿</div></div>
+    </div>
+  </div>
+
+  <!-- Personal -->
+  <div class="checklist-cat" data-cat="personal" data-total="5">
+    <div class="cat-header">
+      <div class="cat-name">💊 個人補給品</div>
+      <div class="cat-prog" id="prog-personal">0 / 5</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="bar-personal" style="width:0%"></div></div>
+    <div class="gear-item" data-id="chamois" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">防磨膏（Chamois Butt'r 或同類）</div><div class="gear-note">Decathlon 有售，出發前塗、途中補塗</div></div>
+    </div>
+    <div class="gear-item" data-id="gel" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">能量膠（至少 15–18 包）</div><div class="gear-note">訓練時先測試口味，再大量購買</div></div>
+    </div>
+    <div class="gear-item" data-id="electrolyte" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">電解質錠 / 粉</div><div class="gear-note">訓練時就開始用，賽天不能第一次測試</div></div>
+    </div>
+    <div class="gear-item" data-id="caffeine" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">咖啡因膠（6–8 包）</div><div class="gear-note">凌晨 4 點睏意高峰必備，先測試耐受</div></div>
+    </div>
+    <div class="gear-item" data-id="pain" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">痠痛噴劑 / 貼布</div><div class="gear-note">大腿、膝蓋、下背都可能需要</div></div>
+    </div>
+  </div>
+
+  <!-- Support Vehicle -->
+  <div class="checklist-cat" data-cat="support" data-total="6">
+    <div class="cat-header">
+      <div class="cat-name">🚗 補給車放置物品</div>
+      <div class="cat-prog" id="prog-support">0 / 6</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="bar-support" style="width:0%"></div></div>
+
+    <div class="gear-item" data-id="end-clothes" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">完賽後替換衣物（三人各一套）</div><div class="gear-note">高雄換完直接搭接駁車回台北</div></div>
+    </div>
+    <div class="gear-item" data-id="spare-kit" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">備用車衣 + 車褲（三人各一套）</div><div class="gear-note">濕透或磨破時在大休息站換</div></div>
+    </div>
+    <div class="gear-item" data-id="powerbank-car" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">行動電源（三人各一顆）</div><div class="gear-note">補給站為前燈、頭燈、碼表充電</div></div>
+    </div>
+    <div class="gear-item" data-id="toilet-paper" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">衛生紙</div></div>
+    </div>
+    <div class="gear-item" data-id="chamois-car" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">防磨膏（Chamois Butt'r）</div><div class="gear-note">大休息站補塗用，放補給車備用</div></div>
+    </div>
+    <div class="gear-item" data-id="first-aid" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">急救包</div><div class="gear-note">OK 繃、優碘、彈性繃帶、退燒藥、防磨膏備用</div></div>
+    </div>
+  </div>
+
+  <!-- Bike Spares (moved to bottom - support vehicle handles these) -->
+  <div style="margin-top:24px;padding:14px 16px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <span style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;">🔧 車輛備品</span>
+      <span style="font-size:11px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:2px 8px;font-weight:600;">✓ 有補給車，這些交給補給車，不用自己帶上路</span>
+    </div>
+    <div style="font-size:14px;color:#94a3b8;line-height:1.8;">
+      備用內胎（每人 2 條）・挖胎棒・迷你打氣筒 + CO₂ 氣瓶・六角扳手組・落地型打氣筒・鏈條潤滑油<br>
+      <span style="color:#d97706;">⚠️ 西濱海線沿途有施工路段與碎石，補給車需準備充足備胎</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRAINING ── -->
+<section id="training" class="section">
+  <div class="section-label">— 準備計畫</div>
+  <h2 class="section-title">8 週訓練計畫</h2>
+  <div class="alert-box">⚡ 目前最長 110K → 目標 360K，需系統性拉長距離，體能做得到</div>
+
+  <div class="train-week">
+    <div class="tw-header">
+      <div><div class="tw-label">WEEK 1–2 ｜ 9/15 – 9/28</div><div class="tw-title">建立基礎</div></div>
+      <div class="tw-km">100–120K/週</div>
+    </div>
+    <div class="tw-detail">最長單次 <strong>130K</strong>。開始測試能量膠 & 電解質，訓練中養成每 30 分鐘補水習慣。若決定換 SPD，這週開始練習上下卡。</div>
+  </div>
+
+  <div class="train-week">
+    <div class="tw-header">
+      <div><div class="tw-label">WEEK 3–4 ｜ 9/29 – 10/12</div><div class="tw-title">拉長距離</div></div>
+      <div class="tw-km">130–150K/週</div>
+    </div>
+    <div class="tw-detail">最長單次 <strong>160K</strong>。確認坐墊問題，找到合適車褲 + 防磨膏組合。可嘗試清晨 5 點出發，模擬夜後晨光感受。</div>
+  </div>
+
+  <div class="train-week key">
+    <div class="tw-header">
+      <div><div class="tw-label">WEEK 5–6 ｜ 10/13 – 10/26 ⭐ 關鍵</div><div class="tw-title">強化耐力</div></div>
+      <div class="tw-km">150–170K/週</div>
+    </div>
+    <div class="tw-detail">最長單次拉到 <strong>200–220K</strong>，賽前最重要的長騎。模擬補給節奏：每 45 分鐘吃一包能量膠，練習在疲勞下維持效率。完成後 360K 的心理壓力會大幅下降。</div>
+  </div>
+
+  <div class="train-week taper">
+    <div class="tw-header">
+      <div><div class="tw-label">WEEK 7 ｜ 10/27 – 11/2</div><div class="tw-title">減量週</div></div>
+      <div class="tw-km">60–80K/週</div>
+    </div>
+    <div class="tw-detail">縮短距離，單次不超過 60K。讓身體充分恢復，不帶傷上賽。確認所有裝備備齊，測試補給車動線。</div>
+  </div>
+
+  <div class="train-week raceweek">
+    <div class="tw-header">
+      <div><div class="tw-label">WEEK 8 ｜ 11/3 – 賽前</div><div class="tw-title">賽前保留</div></div>
+      <div class="tw-km">30–40K/次</div>
+    </div>
+    <div class="tw-detail"><strong>賽前 48 小時停止訓練</strong>，讓肌肉完全充電。賽前一晚高碳水餐：白飯、麵包、香蕉。早點睡。</div>
+  </div>
+</section>
+
+<!-- ── NUTRITION ── -->
+<section id="nutrition" class="section">
+  <div class="section-label">— 賽事策略</div>
+  <h2 class="section-title">補給 & 飲食</h2>
+
+  <h3 style="font-size:15px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">賽前一個月補給品</h3>
+  <div class="supp-wrap">
+    <table class="supp-table">
+      <thead><tr><th>補給品</th><th>怎麼用</th><th>目的</th></tr></thead>
+      <tbody>
+        <tr><td>電解質</td><td>每次訓練中使用</td><td>訓練適應，賽天不陌生</td></tr>
+        <tr><td>能量膠（測試期）</td><td>長騎時輪流試各品牌</td><td>找胃能接受的款式</td></tr>
+        <tr><td>咖啡因膠（測試期）</td><td>訓練中試 1–2 包</td><td>確認有無心悸或胃不適</td></tr>
+        <tr style="background:#fef9c3;">
+          <td style="color:#854d0e;">⭐ 咖啡因戒斷策略</td>
+          <td style="color:#854d0e;">賽前 5–7 天：完全停止咖啡因（咖啡、茶、能量飲料）</td>
+          <td style="color:#854d0e;">賽當天使用咖啡因，耐受度歸零，效益最大化</td>
+        </tr>
+        <tr style="background:#fef9c3;">
+          <td style="color:#854d0e;">⭐ AminoMax Caffeine Boom 用法</td>
+          <td style="color:#854d0e;">每包 4 粒（200mg）分兩次用：<br>第一次 2 粒 → 約 100K／凌晨 04:00<br>第二次 2 粒 → 約 283K／中午 12:00</td>
+          <td style="color:#854d0e;">帶 2 包備用。吞後 30–60 分鐘達峰值，搭足量水，空腹可能胃不適</td>
+        </tr>
+        <tr style="background:#fef9c3;">
+          <td style="color:#854d0e;">⭐ 錠劑 vs 咖啡</td>
+          <td style="color:#854d0e;">全程用錠劑，不依賴咖啡。出發前在八里等待時可以喝一杯，上路後靠 AminoMax</td>
+          <td style="color:#854d0e;">錠劑優勢：劑量精準、腸胃風險低、30 秒搞定不浪費停車時間。咖啡酸性高，騎 100K 後腸胃已在壓力下，容易胃食道逆流</td>
+        </tr>
+        <tr><td>維生素 B 群</td><td>每日早餐後 1 顆</td><td>維持神經與肌肉功能</td></tr>
+        <tr><td>蛋白質補充</td><td>長騎後 30 分鐘內</td><td>加速修復，減少隔天痠痛</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">出發前飲食</h3>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #8b5cf6;border-radius:0 12px 12px 0;padding:14px 16px;box-shadow:var(--shadow);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8b5cf6;margin-bottom:4px;letter-spacing:0.05em;">賽前 2–3 天</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px;">碳水囤積期</div>
+      <ul style="list-style:none;font-size:14px;color:var(--text2);line-height:2;">
+        <li>→ 每餐以白飯、麵、麵包為主</li>
+        <li>→ 減少高纖蔬菜（比賽會脹氣）</li>
+        <li>→ 不要突然嘗試沒吃過的食物</li>
+        <li>→ 不要吃太辣、太油、生冷</li>
+      </ul>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #0284c7;border-radius:0 12px 12px 0;padding:14px 16px;box-shadow:var(--shadow);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0284c7;margin-bottom:4px;letter-spacing:0.05em;">賽前一晚</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px;">碳水大餐</div>
+      <ul style="list-style:none;font-size:14px;color:var(--text2);line-height:2;">
+        <li>→ 白飯 + 清淡配菜</li>
+        <li>→ 不用吃到「撐」</li>
+        <li>→ 晚餐後正常補眠</li>
+        <li>→ 保持喝水、電解質不斷</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #16a34a;border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:20px;box-shadow:var(--shadow);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#16a34a;margin-bottom:4px;letter-spacing:0.05em;">出發當天 19:00–21:30</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:8px;">起床 → 晚餐 → 出門</div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;color:var(--text2);align-items:start;">
+      <span style="font-weight:700;color:var(--text);white-space:nowrap;">19:00</span><span>起床，吃高碳水晚餐（白飯、麵條、香蕉）</span>
+      <span style="font-weight:700;color:var(--text);white-space:nowrap;">21:30</span><span>出發前 <strong>60–90 分鐘</strong>吃輕食：香蕉 1–2 根、飯糰、白土司加蜂蜜</span>
+      <span style="font-weight:700;color:var(--text);white-space:nowrap;">22:30</span><span>抵達八里等待時再吃一根香蕉，撐到 23:00 出發</span>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:#dc2626;font-weight:600;">⚠️ 出發前避免：高纖維、高油脂、高蛋白——難消化，夜騎容易胃脹反胃</div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">賽當天時段補給</h3>
+
+  <div class="nutr-phase night">
+    <div class="nutr-range">23:00 – 04:00 ｜ 0K → 118K</div>
+    <div class="nutr-title">夜間出發段 — 固體食物為主</div>
+    <ul class="nutr-items">
+      <li>每 30 分鐘補水 150–200ml</li>
+      <li>每小時飯糰或香蕉（夜間胃較敏感，以固體為主）</li>
+      <li>電解質每小時補一次</li>
+      <li>初期不要吃太多，強度高容易反胃</li>
+    </ul>
+  </div>
+  <div class="nutr-phase dawn">
+    <div class="nutr-range">04:00 – 08:00 ｜ 118K → 193K</div>
+    <div class="nutr-title">凌晨撞牆期 — 第一次咖啡因 ☕</div>
+    <ul class="nutr-items">
+      <li><strong>約 04:00 第一包咖啡因膠</strong>（人最想睡的時段）</li>
+      <li>固體食物 + 能量膠混合，每 45 分鐘一包膠</li>
+      <li>電解質加強（開始大量出汗）</li>
+      <li>通樹門市（118K）換裝備、補塗防磨膏</li>
+    </ul>
+  </div>
+  <div class="nutr-phase noon">
+    <div class="nutr-range">08:00 – 13:00 ｜ 193K → 292K</div>
+    <div class="nutr-title">上午衝刺段 — 能量膠為主</div>
+    <ul class="nutr-items">
+      <li>每小時 1–2 包能量膠，固體食物為輔</li>
+      <li>每 2–3 小時補一次咖啡因</li>
+      <li><strong>234K 全家大休息 30 分鐘</strong>，好好補充熱量</li>
+      <li>胃不適就換固體食物，別硬灌膠</li>
+    </ul>
+  </div>
+  <div class="nutr-phase finish">
+    <div class="nutr-range">13:00 – 16:00 ｜ 292K → 360K</div>
+    <div class="nutr-title">最後 70K 衝刺 — 全力輸出</div>
+    <ul class="nutr-items">
+      <li><strong>292K 將軍後補充最後一次咖啡因</strong></li>
+      <li>純能量膠 + 運動飲料，不吃固體</li>
+      <li>每 10K 一個小目標，倒數距離</li>
+      <li>324K 興達港是最後補給站，確認剩餘狀態</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── TIPS ── -->
+<section id="tips" class="section">
+  <div class="section-label">— 重要提醒</div>
+  <h2 class="section-title">注意事項</h2>
+
+  <div class="tip-card" style="border-color:#bfdbfe;background:#eff6ff;">
+    <div class="tip-title" style="color:#1d4ed8;">🚲 賽前車輛保養清單（大會也會檢查）</div>
+    <div class="tip-body">
+      大會出發前會核對安全項目，以下需全部通過：<br><br>
+      <strong>大會出發前必查項目</strong><br>
+      ✅ 安全帽（戴妥，帽帶扣好）<br>
+      ✅ 前煞車 & 後煞車（抓緊不虛）<br>
+      ✅ 有效車前燈（可亮燈）<br>
+      ✅ 後車燈（可閃）<br>
+      ✅ 反光背心或反光腰帶<br><br>
+      <strong>自己額外檢查</strong><br>
+      · 胎壓打飽（公路車約 90–110 psi）<br>
+      · 變速調整好、不跳鏈<br>
+      · 電子變速器充好電（電變用戶）<br>
+      · 鏈條上油、無鬆脫<br>
+      · 快拆輪軸鎖緊<br><br>
+      <span style="color:#d97706;"><strong>⚠️ 路段注意</strong>：西濱海線（台61）有多處施工路段與路面碎石，爆胎機率高，補給車需備足備胎。</span>
+    </div>
+  </div>
+
+  <div class="tip-card" style="border-color:#bbf7d0;background:#f0fdf4;">
+    <div class="tip-title" style="color:#15803d;">🔧 自行車保養指南：大保養 vs 小保養</div>
+    <div class="tip-body">
+
+      <strong style="color:#15803d;">▌ 賽前必做（出發前 1–2 週）</strong><br>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px;">
+        <tr style="background:#dcfce7;">
+          <th style="padding:6px 8px;border:1px solid #bbf7d0;text-align:left;">項目</th>
+          <th style="padding:6px 8px;border:1px solid #bbf7d0;text-align:left;">標準 / 動作</th>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">胎壓</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">公路車 <strong>90–110 psi</strong>，出發前一晚打飽</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">後變速</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">調整 L/H 螺絲，確認不落鏈、不掉飛輪</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">前變速</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">調整 H/L 螺絲，確認換檔順暢</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">煞車</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">夾器對正、煞車塊不偏磨，捏緊有力不虛</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">鏈條</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">清洗後上油，確認無鬆脫；磨耗超過 <strong>0.75mm</strong> 要換新</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">快拆 / 輪軸</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">前後輪鎖緊、無鬆動</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">電子變速</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">充飽電（如適用）</td>
+        </tr>
+      </table>
+
+      <strong style="color:#15803d;">▌ 小保養（定期維護）</strong><br>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 16px;font-size:14px;">
+        <div style="background:#dcfce7;border-radius:8px;padding:10px 12px;">
+          <div style="font-weight:700;margin-bottom:4px;">月騎 &lt; 400km</div>
+          每 <strong>3 個月</strong>做一次小保養<br>
+          ・鏈條清潔上油<br>
+          ・變速 / 煞車微調<br>
+          ・各螺絲扭力確認<br>
+          ・胎壓 / 輪胎裂紋檢查
+        </div>
+        <div style="background:#dcfce7;border-radius:8px;padding:10px 12px;">
+          <div style="font-weight:700;margin-bottom:4px;">月騎 ≥ 400km</div>
+          每 <strong>1 個月</strong>做一次小保養<br>
+          ・同左<br>
+          ・加查把帶是否脫膠<br>
+          ・車架、坐管有無裂縫<br>
+          ・BB 轉動是否異音
+        </div>
+      </div>
+
+      <strong style="color:#15803d;">▌ 大保養（每半年 / 每年）</strong><br>
+      <div style="font-size:14px;margin:8px 0 16px;line-height:1.9;">
+        大保養通常交給車店，費用約 <strong>NT$800–2,000</strong>（含工資），建議每年至少一次：<br>
+        · 全車拆卸清潔、潤滑所有活動部位<br>
+        · 傳動系統深度清洗（飛輪、大齒盤、BB 拆裝）<br>
+        · 輪組入輻、輪圈偏差校正（Truing）<br>
+        · 花鼓培林檢查 / 補脂<br>
+        · 前叉碗組（Headset）脂肪補充<br>
+        · 坐管、前叉脂肪防死锁<br>
+        · BB、大齒盤、飛輪鎖緊確認（每 6 個月）<br>
+        · 管線（煞車線、變速線）磨耗，每年更換
+      </div>
+
+      <strong style="color:#15803d;">▌ 耗材更換週期參考</strong><br>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:8px 0;">
+        <tr style="background:#dcfce7;">
+          <th style="padding:6px 8px;border:1px solid #bbf7d0;text-align:left;">耗材</th>
+          <th style="padding:6px 8px;border:1px solid #bbf7d0;text-align:left;">更換時機</th>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">鏈條</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">磨耗計超過 <strong>0.75mm</strong>（約 2,000–3,000km）</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">飛輪 / 大盤</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">換 2–3 條鏈條後同步更換</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">輪胎</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">胎面磨平、側壁裂縫即換（約 3,000–5,000km）</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">煞車線 / 變速線</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">每年更換，或手感變重時</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">把帶</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">黏性消失或髒污嚴重即換</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">煞車塊 / 碟煞片</td>
+          <td style="padding:6px 8px;border:1px solid #bbf7d0;">厚度低於 1mm 或出現刮鐵聲即換</td>
+        </tr>
+      </table>
+
+      <div style="margin-top:10px;padding:10px 14px;background:#fef9c3;border-left:3px solid #d97706;border-radius:4px;font-size:14px;">
+        <strong>💡 北高前建議</strong>：距比賽 <strong>1 週前</strong>完成所有保養，留 2–3 天試騎確認無異常，太接近比賽才保養萬一調壞反而麻煩。
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-card warn">
+    <div class="tip-title">🍑 屁股痛：先診斷再解決</div>
+    <div class="tip-body">
+      <strong>坐骨兩側痛</strong> → 坐墊高度或寬度問題。坐墊太高讓屁股搖晃，坐骨磨擦。先降低 3–5mm 試試。<br><br>
+      <strong>中間麻木</strong> → 血管受壓，考慮中空開孔坐墊。<br><br>
+      <strong>皮膚刺痛摩擦</strong> → 防磨膏 + 升級車褲（剪裁合身比厚度重要）。<br><br>
+      通用技巧：<strong>每 15–20 分鐘站起來踩踏 20 秒</strong>讓血液回流。補給站一定要下車走動。
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-title">🧴 防磨膏使用</div>
+    <div class="tip-body">
+      出發前 <strong>10–15 分鐘</strong>塗在車褲墊子上 + 大腿內側。<br>
+      凡士林可用但耐汗性差，360K 強烈建議 Chamois Butt'r 或 Assos 護膚霜。<br>
+      補給車放一罐，大休息站補塗一次。
+    </div>
+  </div>
+
+  <div class="tip-card" style="border-color:#bae6fd;">
+    <div class="tip-title">🔦 VIVIMAX FL03 燈光使用策略</div>
+    <div class="tip-body">
+      FL03 高亮模式約 4 小時，但需撐過 <strong>7 小時暗夜</strong>（23:00 → 06:00 天亮），以下是交替節奏：<br><br>
+
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:8px 0;">
+        <tr style="background:#f0f9ff;">
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;font-weight:700;">23:00–02:00</td>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;"><strong>中亮模式</strong>｜台61 直線路段夠用</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;font-weight:700;color:#dc2626;">02:00–04:00</td>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;"><strong>高亮模式</strong>｜最危險時段，路口全開</td>
+        </tr>
+        <tr style="background:#f0f9ff;">
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;font-weight:700;">04:00–05:30</td>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;"><strong>中亮模式</strong>｜天快亮，省電</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;font-weight:700;color:#16a34a;">05:30 後</td>
+          <td style="padding:8px 10px;border:1px solid #e0f2fe;"><strong>閃爍模式</strong>｜天亮前過渡，耗電極低</td>
+        </tr>
+      </table>
+
+      <strong>行動電源補電時機</strong>（USB 充電邊騎或停車插）：<br>
+      · CP2 風情海岸 02:00–02:15（15min）→ 補約 10–15%<br>
+      · 通樹門市 04:10–04:25（15min）→ 再補約 10–15%<br>
+      兩次補電後，只剩約 1.5 小時就天亮，完全撐得過去。<br><br>
+
+      <strong>保險備案</strong>：另備一顆便宜 USB 頭燈（迪卡儂登山頭燈約 NT$200–400）戴在安全帽上，FL03 沒電可立刻接力。<br><br>
+
+      <strong style="color:#dc2626;">⚠️ 後閃燈比前燈更關鍵</strong>——三個人的車都要有，這是防被後方追撞的最後一道防線。
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-title">🌙 夜騎心理準備</div>
+    <div class="tip-body">
+      <strong>凌晨 3–5 點</strong>是最難熬時段：睏意最重、體溫最低、最容易負面。<br><br>
+      提前和俏屁、黑輪約好這段互相說話；咖啡因此時使用；放耳機聽喜歡的音樂。<br><br>
+      天亮後（約 6 點）精神自然好轉，熬過去就是另一個世界。
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-title">👟 SPD 卡鞋注意</div>
+    <div class="tip-body">
+      SPD 可步行卡鞋是合理升級，<strong>同時需要換踏板</strong>（Shimano PD-M520）。<br>
+      買了就開始訓練時使用，摔車幾乎都是停車忘退卡，低速慢慢練，兩個月完全夠。
+    </div>
+  </div>
+
+  <div class="tip-card" style="border-color:#c4b5fd;background:#faf5ff;">
+    <div class="tip-title" style="color:#7c3aed;">😴 出發當天睡眠策略</div>
+    <div class="tip-body">
+
+      <strong style="color:#7c3aed;">▌ 當天時間表</strong>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px;">
+        <tr style="background:#ede9fe;">
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;font-weight:700;white-space:nowrap;">下午 15:00</td>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;">遮光、戴眼罩耳塞，開始嘗試補眠</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;font-weight:700;white-space:nowrap;">19:00–20:00</td>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;">起床，吃高碳水晚餐（白飯、麵條、香蕉）</td>
+        </tr>
+        <tr style="background:#ede9fe;">
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;font-weight:700;white-space:nowrap;">20:00–21:30</td>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;">最後整裝確認、裝備上車、出發前往八里</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;font-weight:700;white-space:nowrap;">22:30</td>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;">抵達集合點，報到、暖身</td>
+        </tr>
+        <tr style="background:#ede9fe;">
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;font-weight:700;color:#dc2626;white-space:nowrap;">23:00</td>
+          <td style="padding:8px 10px;border:1px solid #ddd6fe;"><strong>出發！</strong></td>
+        </tr>
+      </table>
+
+      <strong style="color:#7c3aed;">▌ 睡前三步驟（讓下午真的睡得著）</strong>
+      <div style="margin:8px 0 16px;line-height:2;">
+        <strong>① 環境先到位</strong>：遮光窗簾 + 冷氣 22–24°C + 眼罩 + 耳塞。下午三點外面還很亮很吵，物理隔絕最有效。<br>
+        <strong>② 洗溫水澡再去躺</strong>：體溫在洗澡後下降，身體會自然誘發睡意。<br>
+        <strong>③ 目標改成「躺著休息」</strong>：不要強迫自己睡著。閉眼平躺讓肌肉放鬆，就算沒真的睡著，恢復效果也有睡著的 60–70%。越焦慮「我怎麼還沒睡著」反而越睡不著。
+      </div>
+
+      <strong style="color:#7c3aed;">▌ 快速入睡技巧</strong>
+      <div style="margin:8px 0 16px;line-height:2;">
+        <strong>軍事睡眠法</strong>：從臉部開始，依序放鬆每塊肌肉——額頭→眼睛→下巴→頸部→肩膀→手臂→腹部→大腿→小腿。全部放鬆後腦袋只想一個靜止畫面（黑暗的房間、一片湖面）。<br>
+        <strong>4-7-8 呼吸法</strong>：吸氣 4 秒 → 憋氣 7 秒 → 吐氣 8 秒，重複 3–4 輪。副交感神經接管後心跳真的會降下來。
+      </div>
+
+      <strong style="color:#7c3aed;">▌ 褪黑激素（可選）</strong>
+      <div style="margin:8px 0 16px;line-height:2;">
+        下午 14:00 吞 <strong>0.5–1mg 低劑量</strong>褪黑激素，約 1 小時後自然出現睏意，幫助提前進入睡眠視窗。<br>
+        藥局有售，不是安眠藥，不會造成依賴。<br>
+        <strong>建議賽前 1–2 週先試一次</strong>：目的不是測有沒有效，而是測你個人的副作用——少數人隔天會有昏沉感或作夢較多，先知道自己的反應，比在比賽當天才發現好。
+      </div>
+
+      <strong style="color:#7c3aed;">▌ 賽前一週的小習慣</strong>
+      <div style="margin:8px 0;line-height:2;">
+        不需要大幅改變作息，但每天下午找 20–30 分鐘躺一下，讓身體習慣「下午可以放鬆」。練習幾次後，比賽當天的補眠就不會那麼難。
+      </div>
+
+      <div style="margin-top:12px;padding:10px 14px;background:#fef9c3;border-left:3px solid #d97706;border-radius:4px;font-size:14px;">
+        <strong>⚠️ PTT 血淚教訓</strong>：有人出發前因為興奮只睡 2 小時，結果在 180K 路邊打盹 30 分鐘才撐過去。再興奮也要強迫自己躺著，哪怕睡 3 小時都比 0 強得多。
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-card" style="border-color:#fde68a;background:#fffbeb;">
+    <div class="tip-title" style="color:#b45309;">📅 比賽週待辦提醒</div>
+    <div class="tip-body">
+      <strong>推拿 / 整復預約</strong>：比賽週找一天去推拿，處理訓練累積的緊繃，讓身體以最好的狀態出發。<br><br>
+      時機建議：<strong>賽前 4–5 天</strong>（太接近比賽怕肌肉還沒回復），避開賽前最後 2 天。
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-title">🏁 完賽後</div>
+    <div class="tip-body">
+      抵達終點<strong>不要馬上坐下</strong>，慢走 5–10 分鐘讓血液循環恢復。<br>
+      換衣服、吃東西、補水後搭接駁回台北。<br>
+      隔天全身痠痛屬正常，多補蛋白質與睡眠，2–3 天恢復。
+    </div>
+  </div>
+</section>
+
+<footer>
+  2026 TBA 一日北高 ｜ 凱勝 × 俏屁 × 黑輪<br>
+  最後更新：2026-09-16 · 補給車地址確認後請更新
+</footer>
+
+<script>
+// ── MAP ──
+var stations = [
+  { name:'八里訊塘廣場', sub:'北高起點', km:0,     time:'23:00', dep:'23:00', type:'start',  lat:25.154, lng:121.417 },
+  { name:'台61/台15縣交界', sub:'',       km:15,    time:'23:36', dep:'23:51', type:'stop',   lat:25.04,  lng:121.28 },
+  { name:'風情海岸 CP2',   sub:'第二檢查點', km:71,  time:'02:00', dep:'02:15', type:'cp',     lat:24.97,  lng:121.06 },
+  { name:'7-11 通樹門市', sub:'',          km:118,  time:'04:10', dep:'04:25', type:'stop',   lat:24.68,  lng:120.69 },
+  { name:'7-11 廣治門市', sub:'',          km:155.5,time:'05:55', dep:'06:10', type:'stop',   lat:24.28,  lng:120.48 },
+  { name:'王功福海宮 CP3', sub:'第三檢查點', km:190, time:'07:46', dep:'07:46', type:'cp',     lat:23.97,  lng:120.27 },
+  { name:'7-11 新芳林桿門市',sub:'',       km:193,  time:'07:52', dep:'08:07', type:'stop',   lat:23.95,  lng:120.27 },
+  { name:'全家 口湖下崙門市',sub:'大休息 30min', km:234, time:'09:45', dep:'10:15', type:'stop', lat:23.57, lng:120.21 },
+  { name:'北門南鯤鯓門市', sub:'大休息 30min', km:283, time:'12:00', dep:'12:30', type:'stop', lat:23.27,  lng:120.10 },
+  { name:'將軍吉女宮 CP4', sub:'第四檢查點', km:292, time:'12:55', dep:'12:55', type:'cp',     lat:23.19,  lng:120.07 },
+  { name:'興達港情人碼頭', sub:'高雄茄萣', km:324,  time:'14:10', dep:'14:25', type:'stop',   lat:22.88,  lng:120.17 },
+  { name:'高雄屏山國小',  sub:'🏁 北高終點', km:360, time:'16:00', dep:'完賽！', type:'end',   lat:22.58,  lng:120.31 },
+];
+
+var colorMap = { start:'#dc2626', cp:'#16a34a', stop:'#d97706', end:'#0284c7' };
+
+var map = L.map('routeMap', { zoomControl: true, scrollWheelZoom: false })
+           .setView([23.9, 120.6], 8);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 20
+}).addTo(map);
+
+var latlngs = stations.map(function(s){ return [s.lat, s.lng]; });
+L.polyline(latlngs, { color:'#0284c7', weight:3, opacity:0.7, dashArray:'6,4' }).addTo(map);
+
+stations.forEach(function(s, i) {
+  var color = colorMap[s.type] || '#d97706';
+  var size  = (s.type === 'start' || s.type === 'end' || s.type === 'cp') ? 30 : 22;
+  var label = s.type === 'start' ? 'GO' : s.type === 'end' ? 'END' : (s.km + 'K');
+
+  var icon = L.divIcon({
+    html: '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+color+';border:2.5px solid white;display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.35);font-family:monospace;line-height:1">' + label + '</div>',
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2],
+    className: ''
+  });
+
+  var popup = '<div style="font-family:system-ui,sans-serif;min-width:160px">'
+    + '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + s.name + '</div>'
+    + (s.sub ? '<div style="font-size:11px;color:#6b7280;margin-bottom:6px">' + s.sub + '</div>' : '')
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'
+    + '<div style="font-size:11px;color:#6b7280">公里</div><div style="font-size:13px;font-weight:700;font-family:monospace">' + s.km + 'K</div>'
+    + '<div style="font-size:11px;color:#6b7280">到站</div><div style="font-size:13px;font-weight:700;font-family:monospace;color:' + color + '">' + s.time + '</div>'
+    + '<div style="font-size:11px;color:#6b7280">出發</div><div style="font-size:12px;font-family:monospace">' + s.dep + '</div>'
+    + '</div></div>';
+
+  L.marker([s.lat, s.lng], { icon: icon }).addTo(map).bindPopup(popup);
+});
+
+// ── CHECKLIST ──
+var KEY = 'beiGao2026v2';
+function getSaved() { try { return JSON.parse(localStorage.getItem(KEY)||'{}'); } catch(e){ return {}; } }
+function saveit(id,v) { var s=getSaved(); s[id]=v; try{ localStorage.setItem(KEY,JSON.stringify(s)); }catch(e){} }
+
+function toggle(el) {
+  var id = el.dataset.id;
+  var on = el.classList.toggle('done');
+  saveit(id, on);
+  updateProgress();
+}
+
+function updateProgress() {
+  ['night','ride','bike','personal','support'].forEach(function(cat) {
+    var wrap  = document.querySelector('[data-cat="'+cat+'"]');
+    if (!wrap) return;
+    var total = parseInt(wrap.dataset.total);
+    var done  = wrap.querySelectorAll('.gear-item.done').length;
+    var pct   = total ? Math.round(done/total*100) : 0;
+    var p = document.getElementById('prog-'+cat);
+    var b = document.getElementById('bar-'+cat);
+    if(p) p.textContent = done + ' / ' + total;
+    if(b) b.style.width = pct + '%';
+  });
+}
+
+function loadState() {
+  var s = getSaved();
+  document.querySelectorAll('.gear-item').forEach(function(el) {
+    var id = el.dataset.id;
+    if (s[id] === true)  el.classList.add('done');
+    if (s[id] === false) el.classList.remove('done');
+  });
+  updateProgress();
+}
+
+// ── NAV (panel switcher) ──
+function showSection(id) {
+  document.querySelectorAll('section[id]').forEach(function(s) {
+    s.classList.toggle('active', s.id === id);
+  });
+  document.querySelectorAll('.nav-tab').forEach(function(t) {
+    t.classList.toggle('active', t.getAttribute('href') === '#' + id);
+  });
+  window.scrollTo({ top: 0 });
+  if (id === 'route') { setTimeout(function(){ map.invalidateSize(); }, 60); }
+}
+
+document.querySelectorAll('.nav-tab').forEach(function(tab) {
+  tab.addEventListener('click', function(e) {
+    e.preventDefault();
+    showSection(tab.getAttribute('href').slice(1));
+  });
+});
+
+loadState();
+</script>
+</body>
+</html>
