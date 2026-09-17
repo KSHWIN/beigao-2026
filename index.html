@@ -384,6 +384,7 @@ body {
 .badge.have    { background: var(--green-bg); color: var(--green); }
 .badge.tbd     { background: var(--amber-bg); color: var(--amber); }
 .badge.urgent  { background: var(--rose-bg);  color: var(--rose);  }
+.badge.order   { background: #ede9fe; color: #7c3aed; }
 
 /* ── TRAINING ── */
 .train-week {
@@ -427,7 +428,7 @@ body {
 .nutr-items li strong { color: var(--text); }
 
 /* supplement table */
-.supp-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow); }
+.supp-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; margin-bottom: 20px; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; }
 .supp-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .supp-table th { text-align: left; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid var(--border); background: var(--card); }
 .supp-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
@@ -460,9 +461,70 @@ footer {
   line-height: 1.8;
 }
 
-/* Mobile table: hide less critical columns */
-@media (max-width: 440px) {
-  .route-table .col-elapsed { display: none; }
+/* ── ROUTE CARDS ── */
+.route-cards-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  margin: 0 -4px;
+}
+.route-cards {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  padding: 4px 4px 8px;
+}
+.route-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 13px 11px;
+  width: 152px;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+}
+.route-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 14px 14px 0 0;
+  background: var(--border2);
+}
+.route-card.card-start::before { background: #dc2626; }
+.route-card.card-cp::before    { background: #16a34a; }
+.route-card.card-big::before   { background: #d97706; }
+.route-card.card-end::before   { background: #0284c7; }
+.rc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.rc-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; flex: 1; }
+.rc-sub  { font-size: 11px; color: var(--text3); line-height: 1.4; margin-top: 1px; }
+.rc-km   { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: var(--sky); line-height: 1; }
+.rc-seg  { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); }
+.rc-div  { height: 1px; background: var(--border); margin: 3px 0; }
+.rc-row  { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
+.rc-label{ font-size: 10px; color: var(--text3); white-space: nowrap; }
+.rc-time { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text); }
+.rc-time.green { color: #16a34a; }
+.rc-time.red   { color: #dc2626; }
+.rc-time.blue  { color: #0284c7; }
+.rc-rest { font-size: 11px; color: var(--amber); font-weight: 700; }
+.rc-rest.big  { color: #dc2626; font-size: 12px; }
+.rc-rest.done { color: var(--text3); font-weight: 400; }
+.rc-caffeine { font-size: 10px; color: #92400e; font-weight: 700; background: #fef3c7; border-radius: 4px; padding: 2px 5px; margin-top: 2px; display: inline-block; }
+.rc-badge-row { margin-top: 2px; }
+
+/* Mobile layout improvements */
+@media (max-width: 480px) {
+  .tip-card table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .supp-table { min-width: 520px; }
+  .gear-name { font-size: 15px; }
+  .gear-note { font-size: 12px; }
+  .section { padding: 18px 14px; }
+  .cat-name { font-size: 15px; }
 }
 @media (min-width: 480px) {
   .hero-meta { grid-template-columns: repeat(4, 1fr); }
@@ -548,212 +610,175 @@ footer {
     <div class="legend-item"><div class="legend-dot" style="background:#0284c7"></div> 終點</div>
   </div>
 
-  <!-- ROUTE TABLE -->
-  <div class="section-label" style="margin-top:8px;">— 時間 & 里程數據（18H 均速25）</div>
-  <div class="route-table-wrap">
-    <table class="route-table">
-      <thead>
-        <tr>
-          <th>站點</th>
-          <th>公里</th>
-          <th>到站</th>
-          <th>休息</th>
-          <th>出發</th>
-          <th>類型</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="row-start">
-          <td>
-            <div class="station-name">八里訊塘廣場</div>
-            <div class="station-sub">北高正式起點</div>
-          </td>
-          <td>
-            <div class="km-big">0K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:0%"></div></div>
-          </td>
-          <td><div class="time-main" style="color:#dc2626">23:00</div></td>
-          <td><span class="rest-tag none">—</span></td>
-          <td><div class="time-main" style="color:#dc2626">23:00</div></td>
-          <td><span class="type-badge start">起點</span></td>
-        </tr>
+  <!-- ROUTE CARDS -->
+  <div class="section-label" style="margin-top:8px;">— 時間 &amp; 里程數據（18H 均速25）左右滑動查看</div>
+  <div class="route-cards-wrap">
+    <div class="route-cards">
 
-        <tr>
-          <td>
-            <div class="station-name">台61縣&台15縣交界</div>
-          </td>
-          <td>
-            <div class="km-big">15K</div>
-            <div class="km-seg">+15K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:4%"></div></div>
-          </td>
-          <td><div class="time-main">23:36</div><div class="time-depart">+0:36</div></td>
-          <td><span class="rest-tag min">~15min</span></td>
-          <td><div class="time-main">23:51</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 0K 起點 -->
+      <div class="route-card card-start">
+        <div class="rc-top">
+          <div><div class="rc-km">0K</div></div>
+          <span class="type-badge start" style="font-size:10px;padding:2px 6px;">起點</span>
+        </div>
+        <div class="rc-name">八里訊塘廣場</div>
+        <div class="rc-sub">北高正式起點</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time red">23:00</span></div>
+      </div>
 
-        <tr class="row-cp">
-          <td>
-            <div class="station-name">風情海岸</div>
-            <div class="station-sub">第二官方檢查點</div>
-          </td>
-          <td>
-            <div class="km-big">71K</div>
-            <div class="km-seg">+56K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:20%"></div></div>
-          </td>
-          <td><div class="time-main" style="color:#16a34a">02:00</div><div class="time-depart">+3:00</div></td>
-          <td><span class="rest-tag min">15min</span></td>
-          <td><div class="time-main">02:15</div></td>
-          <td><span class="type-badge cp">CP2 ✓</span></td>
-        </tr>
+      <!-- 15K -->
+      <div class="route-card">
+        <div class="rc-top">
+          <div><div class="rc-km">15K</div><div class="rc-seg">+15K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">台61縣 &amp; 台15縣交界</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">23:36</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">~15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">23:51</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">7-11 通樹門市</div>
-            <div class="station-sub" style="color:#d97706;font-weight:700;">☕ 咖啡因第一波 — 2粒</div>
-          </td>
-          <td>
-            <div class="km-big">118K</div>
-            <div class="km-seg">+47K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:33%"></div></div>
-          </td>
-          <td><div class="time-main">04:10</div><div class="time-depart">+5:10</div></td>
-          <td><span class="rest-tag min">15min</span></td>
-          <td><div class="time-main">04:25</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 71K CP2 -->
+      <div class="route-card card-cp">
+        <div class="rc-top">
+          <div><div class="rc-km">71K</div><div class="rc-seg">+56K</div></div>
+          <span class="type-badge cp" style="font-size:10px;padding:2px 6px;">CP2 ✓</span>
+        </div>
+        <div class="rc-name">風情海岸</div>
+        <div class="rc-sub">第二官方檢查點</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time green">02:00</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">02:15</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">7-11 廣治門市</div>
-          </td>
-          <td>
-            <div class="km-big">155.5K</div>
-            <div class="km-seg">+37.5K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:43%"></div></div>
-          </td>
-          <td><div class="time-main">05:55</div><div class="time-depart">+6:55</div></td>
-          <td><span class="rest-tag min">15min</span></td>
-          <td><div class="time-main">06:10</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 118K ☕ -->
+      <div class="route-card">
+        <div class="rc-top">
+          <div><div class="rc-km">118K</div><div class="rc-seg">+47K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">7-11 通樹門市</div>
+        <div class="rc-badge-row"><span class="rc-caffeine">☕ 咖啡因第一波 2粒</span></div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">04:10</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">04:25</span></div>
+      </div>
 
-        <tr class="row-cp">
-          <td>
-            <div class="station-name">王功福海宮</div>
-            <div class="station-sub">第三官方檢查點｜彰化</div>
-          </td>
-          <td>
-            <div class="km-big">190K</div>
-            <div class="km-seg">+34.5K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:53%"></div></div>
-          </td>
-          <td><div class="time-main" style="color:#16a34a">07:46</div><div class="time-depart">+8:46</div></td>
-          <td><span class="rest-tag none">打卡繼續</span></td>
-          <td><div class="time-main">07:46</div></td>
-          <td><span class="type-badge cp">CP3 ✓</span></td>
-        </tr>
+      <!-- 155.5K -->
+      <div class="route-card">
+        <div class="rc-top">
+          <div><div class="rc-km">155K</div><div class="rc-seg">+37.5K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">7-11 廣治門市</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">05:55</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">06:10</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">7-11 新芳林桿門市</div>
-            <div class="station-sub" style="color:#d97706;font-weight:700;">☕ 咖啡因第二波 — 2粒</div>
-          </td>
-          <td>
-            <div class="km-big">193K</div>
-            <div class="km-seg">+3K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:54%"></div></div>
-          </td>
-          <td><div class="time-main">07:52</div><div class="time-depart">+8:52</div></td>
-          <td><span class="rest-tag min">15min</span></td>
-          <td><div class="time-main">08:07</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 190K CP3 -->
+      <div class="route-card card-cp">
+        <div class="rc-top">
+          <div><div class="rc-km">190K</div><div class="rc-seg">+34.5K</div></div>
+          <span class="type-badge cp" style="font-size:10px;padding:2px 6px;">CP3 ✓</span>
+        </div>
+        <div class="rc-name">王功福海宮</div>
+        <div class="rc-sub">第三官方檢查點｜彰化</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time green">07:46</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest done">打卡繼續</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">07:46</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">全家 口湖下崙門市</div>
-            <div class="station-sub">雲林</div>
-          </td>
-          <td>
-            <div class="km-big">234K</div>
-            <div class="km-seg">+41K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:65%"></div></div>
-          </td>
-          <td><div class="time-main">09:45</div><div class="time-depart">+10:45</div></td>
-          <td><span class="rest-tag big">★大休30min</span></td>
-          <td><div class="time-main">10:15</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 193K ☕ -->
+      <div class="route-card">
+        <div class="rc-top">
+          <div><div class="rc-km">193K</div><div class="rc-seg">+3K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">7-11 新芳林桿門市</div>
+        <div class="rc-badge-row"><span class="rc-caffeine">☕ 咖啡因第二波 2粒</span></div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">07:52</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">08:07</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">北門南鯤鯓門市</div>
-            <div class="station-sub">台南</div>
-            <div class="station-sub" style="color:#d97706;font-weight:700;">☕ 咖啡因第三波 — 2粒</div>
-          </td>
-          <td>
-            <div class="km-big">283K</div>
-            <div class="km-seg">+49K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:79%"></div></div>
-          </td>
-          <td><div class="time-main">12:00</div><div class="time-depart">+13:00</div></td>
-          <td><span class="rest-tag big">★大休30min</span></td>
-          <td><div class="time-main">12:30</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 234K 大休 -->
+      <div class="route-card card-big">
+        <div class="rc-top">
+          <div><div class="rc-km">234K</div><div class="rc-seg">+41K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">全家 口湖下崙門市</div>
+        <div class="rc-sub">雲林</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">09:45</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest big">★大休 30min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">10:15</span></div>
+      </div>
 
-        <tr class="row-cp">
-          <td>
-            <div class="station-name">將軍吉女宮</div>
-            <div class="station-sub">第四官方檢查點｜台南</div>
-          </td>
-          <td>
-            <div class="km-big">292K</div>
-            <div class="km-seg">+9K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:81%"></div></div>
-          </td>
-          <td><div class="time-main" style="color:#16a34a">12:55</div><div class="time-depart">+13:55</div></td>
-          <td><span class="rest-tag none">打卡繼續</span></td>
-          <td><div class="time-main">12:55</div></td>
-          <td><span class="type-badge cp">CP4 ✓</span></td>
-        </tr>
+      <!-- 283K 大休 ☕ -->
+      <div class="route-card card-big">
+        <div class="rc-top">
+          <div><div class="rc-km">283K</div><div class="rc-seg">+49K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">北門南鯤鯓門市</div>
+        <div class="rc-sub">台南</div>
+        <div class="rc-badge-row"><span class="rc-caffeine">☕ 咖啡因第三波 2粒</span></div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">12:00</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest big">★大休 30min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">12:30</span></div>
+      </div>
 
-        <tr>
-          <td>
-            <div class="station-name">興達港情人碼頭</div>
-            <div class="station-sub">高雄茄萣</div>
-          </td>
-          <td>
-            <div class="km-big">324K</div>
-            <div class="km-seg">+32K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:90%"></div></div>
-          </td>
-          <td><div class="time-main">14:10</div><div class="time-depart">+15:10</div></td>
-          <td><span class="rest-tag min">15min</span></td>
-          <td><div class="time-main">14:25</div></td>
-          <td><span class="type-badge stop">補給</span></td>
-        </tr>
+      <!-- 292K CP4 -->
+      <div class="route-card card-cp">
+        <div class="rc-top">
+          <div><div class="rc-km">292K</div><div class="rc-seg">+9K</div></div>
+          <span class="type-badge cp" style="font-size:10px;padding:2px 6px;">CP4 ✓</span>
+        </div>
+        <div class="rc-name">將軍吉女宮</div>
+        <div class="rc-sub">第四官方檢查點｜台南</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time green">12:55</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest done">打卡繼續</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">12:55</span></div>
+      </div>
 
-        <tr class="row-end">
-          <td>
-            <div class="station-name">高雄屏山國小</div>
-            <div class="station-sub">🏁 北高終點！</div>
-          </td>
-          <td>
-            <div class="km-big">360K</div>
-            <div class="km-seg">+36K</div>
-            <div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:#0284c7"></div></div>
-          </td>
-          <td><div class="time-main" style="color:#0284c7">16:00</div><div class="time-depart">+17:00</div></td>
-          <td><span class="rest-tag none">完賽！</span></td>
-          <td><div class="time-main" style="color:#0284c7">🎉</div></td>
-          <td><span class="type-badge end">終點</span></td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- 324K -->
+      <div class="route-card">
+        <div class="rc-top">
+          <div><div class="rc-km">324K</div><div class="rc-seg">+32K</div></div>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+        </div>
+        <div class="rc-name">興達港情人碼頭</div>
+        <div class="rc-sub">高雄茄萣</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">14:10</span></div>
+        <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest">15min</span></div>
+        <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">14:25</span></div>
+      </div>
+
+      <!-- 360K 終點 -->
+      <div class="route-card card-end">
+        <div class="rc-top">
+          <div><div class="rc-km">360K</div><div class="rc-seg">+36K</div></div>
+          <span class="type-badge end" style="font-size:10px;padding:2px 6px;">終點</span>
+        </div>
+        <div class="rc-name">高雄屏山國小</div>
+        <div class="rc-sub">🏁 北高終點！</div>
+        <div class="rc-div"></div>
+        <div class="rc-row"><span class="rc-label">完賽</span><span class="rc-time blue">16:00 🎉</span></div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Stats summary -->
@@ -857,19 +882,16 @@ footer {
   </div>
 
   <!-- Personal -->
-  <div class="checklist-cat" data-cat="personal" data-total="7">
+  <div class="checklist-cat" data-cat="personal" data-total="6">
     <div class="cat-header">
       <div class="cat-name">💊 個人補給品</div>
-      <div class="cat-prog" id="prog-personal">0 / 7</div>
+      <div class="cat-prog" id="prog-personal">0 / 6</div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="bar-personal" style="width:0%"></div></div>
-    <div class="gear-item" data-id="chamois" onclick="toggle(this)">
-      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="gear-body"><div class="gear-name">防磨膏（Chamois Butt'r 或同類）</div><div class="gear-note">Decathlon 有售，出發前塗、途中補塗</div></div>
-    </div>
     <div class="gear-item" data-id="gel" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">能量膠（至少 15–18 包）</div><div class="gear-note">訓練時先測試口味，再大量購買</div></div>
+      <div class="badge order">代買</div>
     </div>
     <div class="gear-item" data-id="electrolyte" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -898,7 +920,7 @@ footer {
   <!-- Support Vehicle -->
   <div class="checklist-cat" data-cat="support" data-total="6">
     <div class="cat-header">
-      <div class="cat-name">🚗 補給車放置物品</div>
+      <div class="cat-name">🚗 補給車放置物品 <span style="font-size:11px;background:#dcfce7;color:#16a34a;border-radius:4px;padding:2px 7px;font-weight:700;letter-spacing:0.03em;">✓ 已有補給車</span></div>
       <div class="cat-prog" id="prog-support">0 / 6</div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="bar-support" style="width:0%"></div></div>
@@ -910,6 +932,7 @@ footer {
     <div class="gear-item" data-id="spare-kit" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">備用車衣 + 車褲（三人各一套）</div><div class="gear-note">濕透或磨破時在大休息站換</div></div>
+      <div class="badge order">代買</div>
     </div>
     <div class="gear-item" data-id="powerbank-car" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -922,6 +945,7 @@ footer {
     <div class="gear-item" data-id="chamois-car" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">防磨膏（Chamois Butt'r）</div><div class="gear-note">大休息站補塗用，放補給車備用</div></div>
+      <div class="badge order">代買</div>
     </div>
     <div class="gear-item" data-id="first-aid" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
