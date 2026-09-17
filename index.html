@@ -857,10 +857,10 @@ footer {
   </div>
 
   <!-- Personal -->
-  <div class="checklist-cat" data-cat="personal" data-total="5">
+  <div class="checklist-cat" data-cat="personal" data-total="7">
     <div class="cat-header">
       <div class="cat-name">💊 個人補給品</div>
-      <div class="cat-prog" id="prog-personal">0 / 5</div>
+      <div class="cat-prog" id="prog-personal">0 / 7</div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="bar-personal" style="width:0%"></div></div>
     <div class="gear-item" data-id="chamois" onclick="toggle(this)">
@@ -882,6 +882,16 @@ footer {
     <div class="gear-item" data-id="pain" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">痠痛噴劑 / 貼布</div><div class="gear-note">大腿、膝蓋、下背都可能需要</div></div>
+    </div>
+    <div class="gear-item" data-id="hawthorn-candy" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">鮮楂糖</div><div class="gear-note">長途補給零食，口感好、好攜帶</div></div>
+      <div class="badge tbd">待買</div>
+    </div>
+    <div class="gear-item" data-id="energy-drink" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">能量飲</div><div class="gear-note">補給車備用，大休息站補充</div></div>
+      <div class="badge tbd">待買</div>
     </div>
   </div>
 
@@ -937,6 +947,117 @@ footer {
   <div class="section-label">— 準備計畫</div>
   <h2 class="section-title">8 週訓練計畫</h2>
   <div class="alert-box">⚡ 目前最長 110K → 目標 360K，需系統性拉長距離，體能做得到</div>
+
+  <!-- ── GANTT CHART ── -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 16px;margin-bottom:24px;box-shadow:var(--shadow);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:14px;font-weight:700;">訓練進度 / 倒數計時</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px;">
+      <div style="text-align:center;background:#fee2e2;border-radius:10px;padding:14px 6px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#dc2626;">59</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:2px;">天後比賽</div>
+      </div>
+      <div style="text-align:center;background:#e0f2fe;border-radius:10px;padding:14px 6px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#0284c7;">W1</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:2px;">目前週次</div>
+      </div>
+      <div style="text-align:center;background:#fef3c7;border-radius:10px;padding:14px 6px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#d97706;">⭐W5</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:2px;">關鍵長騎週</div>
+      </div>
+    </div>
+
+    <div style="position:relative;padding-top:26px;">
+
+      <!-- X-axis labels -->
+      <div style="position:absolute;top:0;left:0;right:0;height:22px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);">
+        <span style="position:absolute;left:0">9/15</span>
+        <span style="position:absolute;left:26.7%;transform:translateX(-50%)">10/1</span>
+        <span style="position:absolute;left:70%;transform:translateX(-50%)">10/27</span>
+        <span style="position:absolute;right:0">11/14 🏁</span>
+      </div>
+
+      <!-- Row 1: W1-2 基礎 (0% → 23.3%) -->
+      <div style="position:relative;height:42px;margin-bottom:6px;background:#f1f5f9;border-radius:8px;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;width:23.3%;height:100%;background:#0284c7;border-radius:8px;display:flex;align-items:center;padding:0 10px;">
+          <span style="color:white;font-size:12px;font-weight:700;white-space:nowrap;">W1–2 基礎</span>
+        </div>
+        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">9/15–9/28 · 100–120K/週</span>
+      </div>
+
+      <!-- Row 2: W3-4 拉長 (23.3% → 46.7%) -->
+      <div style="position:relative;height:42px;margin-bottom:6px;background:#f1f5f9;border-radius:8px;overflow:hidden;">
+        <div style="position:absolute;top:0;left:23.3%;width:23.3%;height:100%;background:#6366f1;display:flex;align-items:center;padding:0 10px;">
+          <span style="color:white;font-size:12px;font-weight:700;white-space:nowrap;">W3–4 拉長</span>
+        </div>
+        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">9/29–10/12 · 160K單次</span>
+      </div>
+
+      <!-- Row 3: W5-6 強化 KEY (46.7% → 70%) -->
+      <div style="position:relative;height:42px;margin-bottom:6px;background:#fef9c3;border-radius:8px;overflow:hidden;outline:2px solid #fbbf24;outline-offset:-2px;">
+        <div style="position:absolute;top:0;left:46.7%;width:23.3%;height:100%;background:#d97706;display:flex;align-items:center;padding:0 10px;">
+          <span style="color:white;font-size:12px;font-weight:700;white-space:nowrap;">⭐ W5–6 強化</span>
+        </div>
+        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:#92400e;font-family:'JetBrains Mono',monospace;">10/13–10/26 · 200K單次</span>
+      </div>
+
+      <!-- Row 4: W7 減量 (70% → 81.7%) -->
+      <div style="position:relative;height:42px;margin-bottom:6px;background:#f1f5f9;border-radius:8px;overflow:hidden;">
+        <div style="position:absolute;top:0;left:70%;width:11.7%;height:100%;background:#16a34a;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:center;padding:0 6px;">
+          <span style="color:white;font-size:11px;font-weight:700;white-space:nowrap;">W7 減量</span>
+        </div>
+        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">10/27–11/2 · 60K/週</span>
+      </div>
+
+      <!-- Row 5: W8 賽前 (81.7% → 100%) -->
+      <div style="position:relative;height:42px;background:#f1f5f9;border-radius:8px;overflow:hidden;">
+        <div style="position:absolute;top:0;left:81.7%;width:18.3%;height:100%;background:#dc2626;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:center;padding:0 6px;">
+          <span style="color:white;font-size:11px;font-weight:700;white-space:nowrap;">W8 賽前保留</span>
+        </div>
+        <span style="position:absolute;right:130px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">11/3–11/13</span>
+      </div>
+
+      <!-- TODAY marker at 1.67% -->
+      <div style="position:absolute;top:0;bottom:0;left:1.67%;width:2px;background:#ef4444;z-index:10;pointer-events:none;">
+        <div style="position:absolute;top:-22px;left:4px;background:#ef4444;color:white;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:3px;white-space:nowrap;">今天</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── THIS WEEK PLAN ── -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #0284c7;border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:24px;box-shadow:var(--shadow);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0284c7;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;">本週建議 W1 ｜ 9/16 – 9/21 — 建立節奏</div>
+    <div style="display:grid;gap:7px;">
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);font-weight:700;padding-top:1px;">9/16 Tue</span>
+        <span style="font-size:14px;color:var(--text2);">輕騎 30–40K，感受腿部狀態，不追速度</span>
+      </div>
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/17 Wed</span>
+        <span style="font-size:14px;color:var(--text3);">休息</span>
+      </div>
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);font-weight:700;padding-top:1px;">9/18 Thu</span>
+        <span style="font-size:14px;color:var(--text2);">40–50K 中等強度，維持可以說話的配速（Zone 2）</span>
+      </div>
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/19 Fri</span>
+        <span style="font-size:14px;color:var(--text3);">休息</span>
+      </div>
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;background:#e0f2fe;border-radius:8px;padding:10px 8px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0284c7;font-weight:700;padding-top:1px;">9/20 Sat ⭐</span>
+        <span style="font-size:14px;color:var(--text);font-weight:600;">長騎 70–80K — 第一次實測補給節奏：每 30 分鐘補水、每 45 分鐘吃一次東西</span>
+      </div>
+      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/21 Sun</span>
+        <span style="font-size:14px;color:var(--text3);">輕鬆 20–30K 或完全休息，讓腿部恢復</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:10px 14px;background:#f0f9ff;border-radius:8px;font-size:14px;color:#0369a1;">
+      <strong>下週目標（9/22–9/28）</strong>：週末長騎拉到 <strong>120–130K</strong>，完成 W1–2 的最長單次里程碑。同步開始測試車褲 + 防磨膏組合。
+    </div>
+  </div>
 
   <div class="train-week">
     <div class="tw-header">
