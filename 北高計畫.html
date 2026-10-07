@@ -529,6 +529,29 @@ footer {
 @media (min-width: 480px) {
   .hero-meta { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ── ROUTE ACCORDION ── */
+.wc-route-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 15px 18px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  user-select: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.wc-route-toggle:hover { border-color: var(--sky); box-shadow: 0 2px 10px rgba(14,165,233,.15); }
+.wc-route-toggle-left { flex: 1; }
+.wc-route-toggle-title { font-size: 16px; font-weight: 700; color: var(--text); display: block; }
+.wc-route-toggle-sub { font-size: 12px; color: var(--text3); margin-top: 3px; display: block; }
+.wc-toggle-chevron { font-size: 18px; color: var(--sky); transition: transform .25s; margin-left: 12px; flex-shrink: 0; }
+.wc-toggle-chevron.open { transform: rotate(180deg); }
+.wc-route-content { display: none; }
+.wc-route-content.open { display: block; }
 </style>
 </head>
 <body>
@@ -1585,7 +1608,17 @@ footer {
 <section id="westcoast" class="section">
   <div class="section-label">— 賽前長距離模擬</div>
   <h2 class="section-title">西濱訓練路線</h2>
-  <p style="font-size:14px;color:var(--text3);margin-bottom:20px;">梧棲出發 → 往南 100K → 口湖折返，全程 200K。完整模擬北高 140K–240K 的中後段心理與補給節奏。</p>
+  <p style="font-size:14px;color:var(--text3);margin-bottom:16px;">選擇今天要練的路線，點擊展開查看時間表與折返基準。</p>
+
+  <!-- Route 1 Toggle -->
+  <div class="wc-route-toggle" onclick="toggleRoute('wc-route1')">
+    <div class="wc-route-toggle-left">
+      <span class="wc-route-toggle-title">路線一｜梧棲出發 200K</span>
+      <span class="wc-route-toggle-sub">06:30 出發 · 對應北高 140K–240K · 5 個補給站 · 完成 ≈17:30</span>
+    </div>
+    <span class="wc-toggle-chevron" id="chevron-wc-route1">▼</span>
+  </div>
+  <div class="wc-route-content" id="wc-route1-content">
 
   <!-- 概覽卡 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
@@ -1812,12 +1845,19 @@ footer {
     </div>
   </div>
 
-  <!-- ── ROUTE 2: 麗水漁港 ── -->
-  <hr style="border:none;border-top:2px dashed var(--border);margin:32px 0;">
+  </div><!-- /wc-route1-content -->
 
-  <div class="section-label" style="margin-bottom:8px;">— 路線二：麗水漁港出發（北高中後段）</div>
-  <h3 style="font-size:18px;font-weight:700;color:var(--text);margin:0 0 8px;">麗水南段訓練路線</h3>
-  <p style="font-size:14px;color:var(--text3);margin-bottom:20px;">麗水漁港（台中龍井）出發 → 往南約 90K → 布袋漁港折返，全程約 180K。對應北高 <strong>170K–260K</strong>，覆蓋 CP3 王功 → 234K 大休點 → 嘉義布袋。06:30 出發，~15:00 回到漁港。</p>
+  <hr style="border:none;border-top:2px dashed var(--border);margin:20px 0 16px;">
+
+  <!-- Route 2 Toggle -->
+  <div class="wc-route-toggle" onclick="toggleRoute('wc-route2')">
+    <div class="wc-route-toggle-left">
+      <span class="wc-route-toggle-title">路線二｜麗水漁港出發 ~180K</span>
+      <span class="wc-route-toggle-sub">06:30 出發 · 對應北高 170K–260K · 布袋折返 · 保守版 ≈16:00 回</span>
+    </div>
+    <span class="wc-toggle-chevron" id="chevron-wc-route2">▼</span>
+  </div>
+  <div class="wc-route-content" id="wc-route2-content">
 
   <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 13px;margin-bottom:16px;font-size:13px;color:#1e40af;">
     ⚠️ 以下里程數為估算值，實際距離請以 Google Maps 路線為準。時間表基於公路車均速 25 km/h。
@@ -1833,8 +1873,8 @@ footer {
       <div style="font-size:13px;color:var(--text3)">折返點</div>
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--amber)">~15:00</div>
-      <div style="font-size:13px;color:var(--text3)">回到漁港</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--amber)">~16:00</div>
+      <div style="font-size:13px;color:var(--text3)">回到漁港（保守）</div>
     </div>
   </div>
 
@@ -1901,10 +1941,15 @@ footer {
         <div class="rc-name">全家 口湖下崙門市</div>
         <div class="rc-sub">雲林</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">09:40</span></div>
-        <div class="rc-row"><span class="rc-label">🚀 練習出發</span><span class="rc-time" style="font-weight:700;color:var(--green);">09:55</span></div>
+        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">09:46</span></div>
+        <div class="rc-row"><span class="rc-label">🚀 練習出發</span><span class="rc-time" style="font-weight:700;color:var(--green);">10:01</span></div>
         <div class="rc-row"><span class="rc-label">練習</span><span class="rc-rest big" style="font-size:11px;">★大休 15min</span></div>
         <div class="rc-row"><span class="rc-label">對應北高</span><span class="rc-time" style="color:var(--amber);font-size:11px;">234K 大休點</span></div>
+        <div style="background:#fef3c7;border-radius:6px;padding:5px 7px;margin-top:6px;border-left:3px solid var(--amber);">
+          <div style="font-size:10px;font-weight:700;color:var(--amber);">⚠️ 折返截止</div>
+          <div style="font-size:11px;font-weight:700;color:var(--rose);">超過 10:45 到達</div>
+          <div style="font-size:10px;color:var(--text2);">→ 在此吃飯，直接折返</div>
+        </div>
       </div>
 
       <!-- 口湖休息站 -->
@@ -1916,9 +1961,14 @@ footer {
         <div class="rc-name">台61 口湖休息站</div>
         <div class="rc-sub">雲林｜高架橋下</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">10:12</span></div>
+        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">10:18</span></div>
         <div class="rc-row"><span class="rc-label">設施</span><span class="rc-time" style="font-size:11px;">全家 24H ✅</span></div>
         <div class="rc-row"><span class="rc-label">對應北高</span><span class="rc-time blue" style="font-size:11px;">246K</span></div>
+        <div style="background:#fef3c7;border-radius:6px;padding:5px 7px;margin-top:6px;border-left:3px solid var(--amber);">
+          <div style="font-size:10px;font-weight:700;color:var(--amber);">⚠️ 折返截止</div>
+          <div style="font-size:11px;font-weight:700;color:var(--rose);">超過 11:10 到達</div>
+          <div style="font-size:10px;color:var(--text2);">→ 不去布袋，在此快速補給後折返</div>
+        </div>
       </div>
 
       <!-- 布袋漁港 折返+吃飯 -->
@@ -1930,9 +1980,14 @@ footer {
         <div class="rc-name">布袋漁港</div>
         <div class="rc-sub">嘉義｜吃午餐</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">↩ 折返時間</span><span class="rc-time" style="font-weight:700;color:var(--amber);">10:36</span></div>
-        <div class="rc-row"><span class="rc-label">🍽️ 吃飯</span><span class="rc-time" style="font-weight:700;color:var(--green);">到 11:20</span></div>
+        <div class="rc-row"><span class="rc-label">↩ 到達時間</span><span class="rc-time" style="font-weight:700;color:var(--amber);">10:45</span></div>
+        <div class="rc-row"><span class="rc-label">🍽️ 吃飯</span><span class="rc-time" style="font-weight:700;color:var(--green);">60min → 11:45</span></div>
         <div class="rc-row"><span class="rc-label">推薦</span><span class="rc-time" style="font-size:11px;">海鮮、蚵仔</span></div>
+        <div style="background:#fee2e2;border-radius:6px;padding:5px 7px;margin-top:6px;border-left:3px solid var(--rose);">
+          <div style="font-size:10px;font-weight:700;color:var(--rose);">⚠️ 出發截止</div>
+          <div style="font-size:11px;font-weight:700;color:var(--rose);">最晚 11:45 出發</div>
+          <div style="font-size:10px;color:var(--text2);">→ 否則 16:00 前回不到漁港</div>
+        </div>
       </div>
 
       <!-- 回程分隔 -->
@@ -1953,7 +2008,7 @@ footer {
         <div class="rc-name">口湖 回程</div>
         <div class="rc-sub">雲林</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">11:40</span></div>
+        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">12:07</span></div>
         <div class="rc-row"><span class="rc-label">里程剩</span><span class="rc-time" style="font-size:11px;">~82K</span></div>
       </div>
 
@@ -1966,7 +2021,7 @@ footer {
         <div class="rc-name">王功 / 新芳林桿 回程</div>
         <div class="rc-sub">彰化</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">13:30</span></div>
+        <div class="rc-row"><span class="rc-label">⏱ 預計到站</span><span class="rc-time" style="font-weight:700;color:var(--sky);">14:12</span></div>
         <div class="rc-row"><span class="rc-label">里程剩</span><span class="rc-time" style="font-size:11px;">~38K</span></div>
       </div>
 
@@ -1979,7 +2034,7 @@ footer {
         <div class="rc-name">麗水漁港 返回</div>
         <div class="rc-sub">🎉 ~180K 完成！</div>
         <div class="rc-div"></div>
-        <div class="rc-row"><span class="rc-label">⏱ 預計完成</span><span class="rc-time" style="font-weight:700;color:var(--green);">≈ 15:00</span></div>
+        <div class="rc-row"><span class="rc-label">⏱ 預計完成</span><span class="rc-time" style="font-weight:700;color:var(--green);">≈ 16:00</span></div>
         <div class="rc-row"><span class="rc-label">完成</span><span class="rc-time blue">🏁</span></div>
       </div>
 
@@ -1988,12 +2043,13 @@ footer {
 
   <!-- 提早折返判斷 -->
   <div class="tip-card warn" style="margin-top:16px;">
-    <div class="tip-title">⚠️ 提早折返判斷基準</div>
+    <div class="tip-title">⚠️ 折返截止時間一覽（保守版：回程 22km/h，午餐 60min）</div>
     <div class="tip-body">
-      <strong>🕙 王功（35K）超過 09:00 才到</strong>：落後超過 1 小時，建議在此折返 → 完成約 70K<br>
-      <strong>🕙 口湖下崙（75K）超過 11:00 才到</strong>：15:00 前回不了漁港，建議在口湖折返 → 完成約 150K<br>
-      <strong>🌅 日落前務必回到麗水</strong>：台61 夜騎能見度差<br><br>
-      <span style="color:var(--rose);font-weight:600;">時間到就折返，不需要為了完成 180K 強騎。</span>
+      <strong>🟡 口湖下崙（75K）超過 10:45 到達</strong>：不繼續往南，在全家吃完折返 → 約 15:30 回漁港<br>
+      <strong>🟠 口湖休息站（82K）超過 11:10 到達</strong>：不去布袋，在全家快速補給後折返 → 約 15:30 回漁港<br>
+      <strong>🔴 布袋漁港（90K）最晚 11:45 出發</strong>：吃飯計時，11:45 準時離開 → 約 16:00 回漁港<br><br>
+      <span style="color:var(--sky);font-weight:600;">回程速度預設 22km/h（疲勞腿）。如果當天狀況好、速度快，可以比預計更早回到。</span><br>
+      <span style="color:var(--rose);font-weight:600;">沒有人需要為了完成 180K 而騎黑夜。</span>
     </div>
   </div>
 
@@ -2010,6 +2066,8 @@ footer {
       <strong>後 90K 回程</strong>：模擬北高 260K–340K 的純疲勞管理段落
     </div>
   </div>
+
+  </div><!-- /wc-route2-content -->
 
 </section>
 
@@ -2384,6 +2442,19 @@ document.querySelectorAll('.nav-tab').forEach(function(tab) {
 });
 
 loadState();
+
+function toggleRoute(id) {
+  var el = document.getElementById(id + '-content');
+  var ch = document.getElementById('chevron-' + id);
+  if (!el) return;
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    if (ch) ch.classList.remove('open');
+  } else {
+    el.classList.add('open');
+    if (ch) ch.classList.add('open');
+  }
+}
 </script>
 </body>
 </html>
