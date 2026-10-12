@@ -584,25 +584,25 @@ footer {
 <!-- ── TEAM ── -->
 <section class="team-section">
   <div class="section-label">— 本次成員</div>
-  <div style="font-size:13px;color:var(--text3);margin-bottom:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">騎行陣型：前 → 中 → 後</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">破風戰術：俏屁 ↔ 凱勝 每 5K 輪替領騎 · Helen 自己節奏</div>
   <div class="team-grid">
     <div class="team-card" style="border-top:3px solid var(--sky);">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sky);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">① 前車</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sky);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">↻ 輪替前車</div>
       <div class="team-avatar">💨</div>
       <div class="team-name" style="font-size:18px;">俏屁</div>
-      <div class="team-role" style="font-size:12px;margin-top:4px;">帶頭領騎</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">與凱勝每 5K 換手破風</div>
     </div>
     <div class="team-card" style="border-top:3px solid var(--amber);">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">② 中車</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">後車</div>
       <div class="team-avatar" style="border-color:var(--amber);background:#fef3c7;">🔧</div>
       <div class="team-name" style="font-size:18px;">黑輪</div>
-      <div class="team-role" style="font-size:12px;margin-top:4px;">中間壓陣</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">跟在後方，依自己節奏</div>
     </div>
     <div class="team-card" style="border-top:3px solid var(--green);">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">③ 後車</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);font-weight:700;letter-spacing:0.1em;margin-bottom:8px;">↻ 輪替前車</div>
       <div class="team-avatar" style="border-color:var(--green);background:#dcfce7;">🧢</div>
       <div class="team-name" style="font-size:18px;">凱勝</div>
-      <div class="team-role" style="font-size:12px;margin-top:4px;">收尾 & 協調</div>
+      <div class="team-role" style="font-size:12px;margin-top:4px;">與俏屁每 5K 換手破風</div>
     </div>
   </div>
 </section>
@@ -1116,10 +1116,20 @@ footer {
         <span style="position:absolute;right:130px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">11/3–11/13</span>
       </div>
 
-      <!-- TODAY marker at 1.67% -->
-      <div style="position:absolute;top:0;bottom:0;left:1.67%;width:2px;background:#ef4444;z-index:10;pointer-events:none;">
+      <!-- TODAY marker (dynamic) -->
+      <div id="today-marker" style="position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:10;pointer-events:none;">
         <div style="position:absolute;top:-22px;left:4px;background:#ef4444;color:white;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:3px;white-space:nowrap;">今天</div>
       </div>
+      <script>
+        (function(){
+          var start = new Date('2026-09-15');
+          var end   = new Date('2026-11-14');
+          var today = new Date();
+          var pct   = Math.min(100, Math.max(0, (today - start) / (end - start) * 100));
+          var m = document.getElementById('today-marker');
+          if (m) m.style.left = pct.toFixed(2) + '%';
+        })();
+      </script>
 
     </div>
   </div>
