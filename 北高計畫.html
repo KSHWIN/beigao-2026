@@ -847,12 +847,17 @@ footer {
   <p style="font-size:14px;color:var(--text3);margin-bottom:16px;">點擊項目勾選，進度存在你的裝置，不影響其他人。</p>
 
   <!-- Night -->
-  <div class="checklist-cat" data-cat="night" data-total="4">
+  <div class="checklist-cat" data-cat="night" data-total="5">
     <div class="cat-header">
-      <div class="cat-name">🌙 夜間安全（最高優先）</div>
-      <div class="cat-prog" id="prog-night">0 / 4</div>
+      <div class="cat-name">🚲 車上裝備</div>
+      <div class="cat-prog" id="prog-night">0 / 5</div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="bar-night" style="width:0%"></div></div>
+    <div class="gear-item" data-id="topbag" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">上管包</div><div class="gear-note">放隨手補給、手機、悠遊卡等小物</div></div>
+      <div class="badge tbd">待買</div>
+    </div>
     <div class="gear-item" data-id="light-front-main" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">前燈（主燈）</div><div class="gear-note">1000 流明以上，可連續 6 小時以上</div></div>
@@ -921,6 +926,39 @@ footer {
     <div class="gear-item" data-id="bandaid" onclick="toggle(this)">
       <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="gear-body"><div class="gear-name">OK繃（數片）</div><div class="gear-note">哪裡痠痛磨破就貼，放鞍座包或車衣口袋</div></div>
+    </div>
+  </div>
+
+  <!-- On Person -->
+  <div class="checklist-cat" data-cat="onperson" data-total="6">
+    <div class="cat-header">
+      <div class="cat-name">🎽 隨身攜帶（車衣口袋 / 上管包）</div>
+      <div class="cat-prog" id="prog-onperson">0 / 6</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="bar-onperson" style="width:0%"></div></div>
+    <div class="gear-item" data-id="easycard" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">悠遊卡</div><div class="gear-note">補給站付款快，放上管包或車衣口袋</div></div>
+    </div>
+    <div class="gear-item" data-id="nhcard" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">健保卡</div><div class="gear-note">萬一需要急診直接有</div></div>
+    </div>
+    <div class="gear-item" data-id="gel-body" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">能量膠（1–2 包）</div><div class="gear-note">隨時取用，補給站再補充；大量備用放補給車</div></div>
+    </div>
+    <div class="gear-item" data-id="caffeine-body" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">咖啡因錠 / 膠（當次份）</div><div class="gear-note">出發前按時間點分裝帶身上，備用放補給車</div></div>
+    </div>
+    <div class="gear-item" data-id="powerbank-body" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">行動電源（小型）</div><div class="gear-note">放下管包，為碼表、手機、前燈隨時補電</div></div>
+    </div>
+    <div class="gear-item" data-id="gelwaste-bag" onclick="toggle(this)">
+      <div class="checkbox"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="gear-body"><div class="gear-name">小塑膠袋</div><div class="gear-note">裝吃完的能量膠包裝，到補給站再丟</div></div>
     </div>
   </div>
 
