@@ -1182,11 +1182,11 @@ footer {
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px;">
       <div style="text-align:center;background:#fee2e2;border-radius:10px;padding:14px 6px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#dc2626;">59</div>
+        <div id="days-countdown" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#dc2626;">—</div>
         <div style="font-size:13px;color:var(--text3);margin-top:2px;">天後比賽</div>
       </div>
       <div style="text-align:center;background:#e0f2fe;border-radius:10px;padding:14px 6px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#0284c7;">W1</div>
+        <div id="current-week" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#0284c7;">—</div>
         <div style="font-size:13px;color:var(--text3);margin-top:2px;">目前週次</div>
       </div>
       <div style="text-align:center;background:#fef3c7;border-radius:10px;padding:14px 6px;">
@@ -1263,39 +1263,86 @@ footer {
     </div>
   </div>
 
-  <!-- ── THIS WEEK PLAN ── -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #0284c7;border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:24px;box-shadow:var(--shadow);">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0284c7;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;">本週建議 W1 ｜ 9/16 – 9/21 — 建立節奏</div>
-    <div style="display:grid;gap:7px;">
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);font-weight:700;padding-top:1px;">9/16 Tue</span>
-        <span style="font-size:14px;color:var(--text2);">輕騎 30–40K，感受腿部狀態，不追速度</span>
-      </div>
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/17 Wed</span>
-        <span style="font-size:14px;color:var(--text3);">休息</span>
-      </div>
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);font-weight:700;padding-top:1px;">9/18 Thu</span>
-        <span style="font-size:14px;color:var(--text2);">40–50K 中等強度，維持可以說話的配速（Zone 2）</span>
-      </div>
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/19 Fri</span>
-        <span style="font-size:14px;color:var(--text3);">休息</span>
-      </div>
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;background:#e0f2fe;border-radius:8px;padding:10px 8px;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0284c7;font-weight:700;padding-top:1px;">9/20 Sat ⭐</span>
-        <span style="font-size:14px;color:var(--text);font-weight:600;">長騎 70–80K — 第一次實測補給節奏：每 30 分鐘補水、每 45 分鐘吃一次東西</span>
-      </div>
-      <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);font-weight:700;padding-top:1px;">9/21 Sun</span>
-        <span style="font-size:14px;color:var(--text3);">輕鬆 20–30K 或完全休息，讓腿部恢復</span>
-      </div>
-    </div>
-    <div style="margin-top:14px;padding:10px 14px;background:#f0f9ff;border-radius:8px;font-size:14px;color:#0369a1;">
-      <strong>下週目標（9/22–9/28）</strong>：週末長騎拉到 <strong>120–130K</strong>，完成 W1–2 的最長單次里程碑。同步開始測試車褲 + 防磨膏組合。
-    </div>
-  </div>
+  <!-- ── THIS WEEK PLAN (dynamic) ── -->
+  <div id="this-week-plan" style="background:var(--surface);border:1px solid var(--border);border-left:4px solid #0284c7;border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:24px;box-shadow:var(--shadow);"></div>
+  <script>
+  (function(){
+    var RACE = new Date('2026-11-14'); RACE.setHours(0,0,0,0);
+    var today = new Date(); today.setHours(0,0,0,0);
+
+    // ── countdown ──
+    var daysLeft = Math.max(0, Math.ceil((RACE - today) / 86400000));
+    var cdEl = document.getElementById('days-countdown');
+    if (cdEl) cdEl.textContent = daysLeft;
+
+    // ── week definitions ──
+    var W = [
+      {id:'W1',c:'#0284c7',r:'9/15–9/21',th:'建立節奏',s:'2026-09-15',e:'2026-09-21',
+       days:[{d:'9/16 Tue',t:'輕騎 30–40K，感受腿部狀態，不追速度'},{d:'9/17 Wed',t:'休息',dim:1},{d:'9/18 Thu',t:'40–50K 中等強度，Zone 2'},{d:'9/19 Fri',t:'休息',dim:1},{d:'9/20 Sat ⭐',t:'長騎 70–80K — 實測補給節奏：每 30 分補水、每 45 分吃東西',key:1},{d:'9/21 Sun',t:'輕鬆 20–30K 或完全休息'}],
+       next:'W2 目標（9/22–9/28）：週末長騎 120–130K，測試車褲 + 防摩擦膏組合。'},
+      {id:'W2',c:'#0284c7',r:'9/22–9/28',th:'建立節奏',s:'2026-09-22',e:'2026-09-28',
+       days:[{d:'9/22 Mon',t:'輕騎 30–40K 恢復'},{d:'9/23 Tue',t:'休息',dim:1},{d:'9/24 Wed',t:'50–60K Zone 2'},{d:'9/25 Thu',t:'休息',dim:1},{d:'9/27 Sat ⭐',t:'長騎 120–130K — 最長里程碑，測試車褲 + 防摩擦膏',key:1},{d:'9/28 Sun',t:'完全休息'}],
+       next:'W3 目標（9/29–10/5）：加入 Zone 3，最長單次 140K。'},
+      {id:'W3',c:'#6366f1',r:'9/29–10/5',th:'拉長距離',s:'2026-09-29',e:'2026-10-05',
+       days:[{d:'9/29 Mon',t:'輕騎 40K 恢復'},{d:'9/30 Tue',t:'休息',dim:1},{d:'10/1 Wed',t:'60–70K Zone 2，加入短爬坡'},{d:'10/2 Thu',t:'休息',dim:1},{d:'10/4 Sat ⭐',t:'長騎 140–150K — 測試能量膠搭配',key:1},{d:'10/5 Sun',t:'輕鬆 20–30K 或完全休息'}],
+       next:'W4 目標（10/6–10/12）：最長單次 160K，確認坐墊高度。'},
+      {id:'W4',c:'#6366f1',r:'10/6–10/12',th:'拉長距離',s:'2026-10-06',e:'2026-10-12',
+       days:[{d:'10/6 Mon',t:'輕騎 40K 恢復'},{d:'10/7 Tue',t:'休息',dim:1},{d:'10/8 Wed',t:'60K Zone 2，確認坐墊狀態'},{d:'10/9 Thu',t:'休息',dim:1},{d:'10/11 Sat ⭐',t:'長騎 160K — 模擬北高前段補給節奏',key:1},{d:'10/12 Sun',t:'完全休息，評估身體狀態'}],
+       next:'W5 目標（10/13–10/19）：強化週，加入夜騎練習，200K 單次目標。'},
+      {id:'W5',c:'#d97706',r:'10/13–10/19',th:'關鍵強化',s:'2026-10-13',e:'2026-10-19',
+       days:[{d:'10/13 Mon',t:'輕騎 40K 恢復'},{d:'10/14 Tue',t:'休息',dim:1},{d:'10/15 Wed',t:'70K Zone 2，夜間出發練習'},{d:'10/16 Thu',t:'休息',dim:1},{d:'10/18 Sat ⭐',t:'長騎 180–200K — 凌晨出發模擬比賽節奏',key:1},{d:'10/19 Sun',t:'完全休息'}],
+       next:'W6 目標（10/20–10/26）：再跑一次 200K，確認補給品牌與用量，賽前最後大量訓練。'},
+      {id:'W6',c:'#d97706',r:'10/20–10/26',th:'關鍵強化',s:'2026-10-20',e:'2026-10-26',
+       days:[{d:'10/20 Mon',t:'輕騎 40K 恢復'},{d:'10/21 Tue',t:'休息',dim:1},{d:'10/22 Wed',t:'60K Zone 2，確認所有裝備'},{d:'10/23 Thu',t:'休息',dim:1},{d:'10/25 Sat ⭐',t:'長騎 200K — 賽前最後一次大量訓練',key:1},{d:'10/26 Sun',t:'完全休息，迎接減量週'}],
+       next:'W7 目標（10/27–11/2）：減量週，大幅降低里程，讓身體蓄積能量。'},
+      {id:'W7',c:'#16a34a',r:'10/27–11/2',th:'減量備戰',s:'2026-10-27',e:'2026-11-02',
+       days:[{d:'10/27 Mon',t:'完全休息',dim:1},{d:'10/28 Tue',t:'輕騎 30–40K，感受腿部狀態'},{d:'10/29 Wed',t:'休息',dim:1},{d:'10/30 Thu',t:'輕騎 30–40K Zone 2，不追速度'},{d:'10/31 Fri',t:'休息',dim:1},{d:'11/1 Sat ⭐',t:'輕騎 50–60K，測試賽前裝備配置與補給流程',key:1},{d:'11/2 Sun',t:'完全休息，開始備戰模式'}],
+       next:'W8 目標（11/3–11/13）：賽前保留週，只做 2 次短騎 20–30K，其餘完全休息。確認補給品分裝、裝備清單。'},
+      {id:'W8',c:'#dc2626',r:'11/3–11/13',th:'賽前保留',s:'2026-11-03',e:'2026-11-13',
+       days:[{d:'11/3 Mon',t:'輕騎 20–30K，確認車況'},{d:'11/4 Tue',t:'完全休息',dim:1},{d:'11/5 Wed',t:'輕騎 20K，最後確認補給品'},{d:'11/6 Thu',t:'完全休息',dim:1},{d:'11/7 Fri',t:'完全休息',dim:1},{d:'11/8 Sat',t:'完全休息，早睡補眠存量'},{d:'11/13 Thu',t:'最終裝備確認，補給品打包，21:00 前就寢',key:1}],
+       next:'11/14（六）比賽日！23:00 出發，目標 18 小時完賽 🏁'}
+    ];
+
+    // ── find current week ──
+    var curr = W[0];
+    for (var i=0;i<W.length;i++){
+      var s=new Date(W[i].s); s.setHours(0,0,0,0);
+      var e=new Date(W[i].e); e.setHours(23,59,59,999);
+      if(today>=s&&today<=e){curr=W[i];break;}
+      if(today>e) curr=W[i];
+    }
+
+    // ── update week badge ──
+    var cwEl=document.getElementById('current-week');
+    if(cwEl){cwEl.textContent=curr.id;cwEl.style.color=curr.c;}
+
+    // ── today label for row highlight ──
+    var tm=today.getMonth()+1, td=today.getDate();
+    var todayPrefix=tm+'/'+td+' ';
+
+    // ── build rows ──
+    var rows=curr.days.map(function(day){
+      var isToday=day.d.indexOf(todayPrefix)===0;
+      var bg=(isToday||day.key)?'background:#e0f2fe;border-radius:8px;padding:10px 8px;':'';
+      var lc=isToday?curr.c:(day.key?curr.c:(day.dim?'var(--text3)':'var(--sky)'));
+      var tc=isToday?'var(--text)':(day.key?'var(--text)':(day.dim?'var(--text3)':'var(--text2)'));
+      var fw=(isToday||day.key)?'600':'400';
+      var tag=isToday?' 📍今天':'';
+      return '<div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;'+bg+'">'+
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:'+lc+';font-weight:700;padding-top:1px;">'+day.d+tag+'</span>'+
+        '<span style="font-size:14px;color:'+tc+';font-weight:'+fw+';">'+day.t+'</span></div>';
+    }).join('');
+
+    // ── inject ──
+    var planEl=document.getElementById('this-week-plan');
+    if(!planEl) return;
+    planEl.style.borderLeftColor=curr.c;
+    planEl.innerHTML=
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:'+curr.c+';font-weight:700;letter-spacing:0.08em;margin-bottom:12px;">本週建議 '+curr.id+' ｜ '+curr.r+' — '+curr.th+'</div>'+
+      '<div style="display:grid;gap:7px;">'+rows+'</div>'+
+      '<div style="margin-top:14px;padding:10px 14px;background:#f0f9ff;border-radius:8px;font-size:14px;color:#0369a1;"><strong>'+curr.next+'</strong></div>';
+  })();
+  </script>
 
   <div class="train-week">
     <div class="tw-header">
