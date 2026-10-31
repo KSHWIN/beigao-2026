@@ -514,7 +514,17 @@ footer {
 .rc-rest { font-size: 11px; color: var(--amber); font-weight: 700; }
 .rc-rest.big  { color: #dc2626; font-size: 12px; }
 .rc-rest.done { color: var(--text3); font-weight: 400; }
-.rc-caffeine { font-size: 10px; color: #92400e; font-weight: 700; background: #fef3c7; border-radius: 4px; padding: 2px 5px; margin-top: 2px; display: inline-block; }
+.rc-caffeine { font-size: 10px; font-weight: 700; border-radius: 4px; padding: 2px 5px; margin-top: 2px; display: inline-block; }
+/* 保姆車 — 綠色 */
+.rc-badge-car  { background:#dcfce7; color:#166534; }
+/* 咖啡因 — 深棕咖啡色 */
+.rc-badge-caf  { background:#fef3c7; color:#92400e; }
+/* 吃飯大休 — 橙紅色 */
+.rc-badge-meal { background:#ffedd5; color:#c2410c; }
+/* 補塗護理 — 粉紅色 */
+.rc-badge-care { background:#fce7f3; color:#9d174d; }
+/* 警告/無支援 — 黃底深字 */
+.rc-badge-warn { background:#fef9c3; color:#713f12; }
 .rc-badge-row { margin-top: 2px; }
 
 /* Mobile layout improvements */
@@ -745,7 +755,7 @@ footer {
         </div>
         <div class="rc-name">台61縣 &amp; 台15縣交界</div>
         <div class="rc-badge-row">
-          <span class="rc-caffeine" style="background:#dcfce7;color:#166534;">🚗 有補給車，但不休息</span>
+          <span class="rc-caffeine rc-badge-car">🚗 有補給車，但不休息</span>
         </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">23:36</span></div>
@@ -762,7 +772,7 @@ footer {
         <div class="rc-name">7-11 永安漁港</div>
         <div class="rc-sub">桃園新屋｜台61線沿線</div>
         <div class="rc-badge-row">
-          <span class="rc-caffeine" style="background:#fef3c7;color:#92400e;">⚠️ 無保姆車・無補給車｜自行休息</span>
+          <span class="rc-caffeine rc-badge-warn">⚠️ 無保姆車・無補給車｜自行休息</span>
         </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">00:53</span></div>
@@ -779,9 +789,9 @@ footer {
         <div class="rc-name">風情海岸</div>
         <div class="rc-sub">第一官方檢查點｜新竹市濱海</div>
         <div class="rc-badge-row">
-          <span class="rc-caffeine" style="background:#dcfce7;color:#166534;">🚗 保姆車在此｜可拿車上物品</span>
-          <span class="rc-caffeine">☕ 咖啡因第一波 100mg</span>
-          <span class="rc-caffeine" style="background:#fce7f3;color:#9d174d;">🧴 補塗防摩擦膏</span>
+          <span class="rc-caffeine rc-badge-car">🚗 保姆車在此｜可拿車上物品</span>
+          <span class="rc-caffeine rc-badge-caf">☕ 咖啡因第一波 100mg</span>
+          <span class="rc-caffeine rc-badge-care">🧴 補塗防摩擦膏</span>
         </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time green">02:00</span></div>
@@ -828,8 +838,8 @@ footer {
         <div class="rc-name">王功福海宮 → 7-11 新芳林桿</div>
         <div class="rc-sub">第二官方檢查點｜彰化王功漁港區（兩點相距 3K）</div>
         <div class="rc-badge-row">
-          <span class="rc-caffeine" style="background:#fef3c7;color:#92400e;">🍱 早餐大休</span>
-          <span class="rc-caffeine">☕ 咖啡因第二波 100mg</span>
+          <span class="rc-caffeine rc-badge-meal">🍱 早餐大休</span>
+          <span class="rc-caffeine rc-badge-caf">☕ 咖啡因第二波 100mg</span>
         </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time green">07:46</span></div>
@@ -852,25 +862,28 @@ footer {
         <div class="rc-name">全家 口湖下崙門市</div>
         <div class="rc-sub" style="font-size:14px;font-weight:600;color:var(--amber);">雲林口湖鄉｜阿鍊小吃附近</div>
         <div class="rc-badge-row">
-          <span class="rc-caffeine" style="background:#dcfce7;color:#166534;">🚗 保姆車在此｜可拿車上物品</span>
-          <span class="rc-caffeine" style="background:#fce7f3;color:#9d174d;">🧴 補塗防摩擦膏</span>
+          <span class="rc-caffeine rc-badge-car">🚗 保姆車在此｜可拿車上物品</span>
+          <span class="rc-caffeine rc-badge-meal">🍜 阿鍊小吃｜在地早午餐</span>
+          <span class="rc-caffeine rc-badge-care">🧴 補塗防摩擦膏</span>
         </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">10:15</span></div>
         <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest big">★真正大休 30min</span></div>
         <div class="rc-row"><span class="rc-label">出發</span><span class="rc-time">10:45</span></div>
-        <div class="rc-row" style="margin-top:4px;"><span class="rc-label" style="font-size:10px;">🍜 阿鍊小吃</span><span class="rc-time" style="font-size:10px;color:var(--text3);">在地早午餐，補足熱量再出發</span></div>
       </div>
 
       <!-- 283K 大休 ☕ -->
       <div class="route-card card-big">
         <div class="rc-top">
           <div><div class="rc-km">283K</div><div class="rc-seg">+49K</div></div>
-          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">補給</span>
+          <span class="type-badge stop" style="font-size:10px;padding:2px 6px;">大休</span>
         </div>
         <div class="rc-name">北門南鯤鯓門市</div>
         <div class="rc-sub">台南北門｜南鯤鯓代天府廟口</div>
-        <div class="rc-badge-row"><span class="rc-caffeine">☕ 咖啡因第三波 100mg</span></div>
+        <div class="rc-badge-row">
+          <span class="rc-caffeine rc-badge-meal">🍜 廟口小吃｜午餐大休</span>
+          <span class="rc-caffeine rc-badge-caf">☕ 咖啡因第三波 100mg</span>
+        </div>
         <div class="rc-div"></div>
         <div class="rc-row"><span class="rc-label">到站</span><span class="rc-time">12:15</span></div>
         <div class="rc-row"><span class="rc-label">休息</span><span class="rc-rest big">★午餐大休 30min</span></div>
