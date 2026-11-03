@@ -219,10 +219,36 @@ body {
   box-shadow: var(--shadow2);
   margin-bottom: 20px;
   height: 340px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   background: #f0f9ff;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+#routeMap:active { cursor: grabbing; }
+#routeMapInner {
+  transform-origin: 0 0;
+  will-change: transform;
+}
+#routeMapReset {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+#routeMapReset:hover { background: #fff; }
 .map-legend {
   display: flex;
   gap: 12px;
@@ -637,6 +663,8 @@ footer {
 
   <!-- MAP -->
   <div id="routeMap">
+  <button id="routeMapReset">↺ 重置</button>
+  <div id="routeMapInner">
   <svg viewBox="0 0 310 578" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;font-family:system-ui,-apple-system,sans-serif">
     <rect width="310" height="578" fill="#f0f9ff"/>
     <!-- 北/南 label -->
@@ -723,7 +751,8 @@ footer {
     <text x="70"  y="397" font-size="6.5" fill="#94a3b8" font-style="italic">〜 曾文溪橋 ~263K</text>
     <text x="72"  y="517" font-size="6.5" fill="#94a3b8" font-style="italic">〜 二仁溪橋 ~342K｜南→高</text>
   </svg>
-  </div>
+  </div><!-- /routeMapInner -->
+  </div><!-- /routeMap -->
 
   <div class="map-legend">
     <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div> 起點</div>
@@ -2598,6 +2627,109 @@ function toggleRoute(id) {
     if (ch) ch.classList.add('open');
   }
 }
+
+// ── Map pan + zoom ──
+(function() {
+  var container = document.getElementById('routeMap');
+  var inner = document.getElementById('routeMapInner');
+  if (!container || !inner) return;
+
+  var tx = 0, ty = 0, scale = 1;
+  var MIN_SCALE = 0.5, MAX_SCALE = 6;
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function apply() {
+    inner.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+  }
+
+  // ── Mouse drag ──
+  var dragging = false, ox = 0, oy = 0;
+  container.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    dragging = true;
+    ox = e.clientX - tx;
+    oy = e.clientY - ty;
+    container.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    tx = e.clientX - ox;
+    ty = e.clientY - oy;
+    apply();
+  });
+  window.addEventListener('mouseup', function() {
+    if (!dragging) return;
+    dragging = false;
+    container.style.cursor = '';
+  });
+
+  // ── Scroll zoom (desktop) ──
+  container.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var rect = container.getBoundingClientRect();
+    var mx = e.clientX - rect.left;
+    var my = e.clientY - rect.top;
+    var factor = e.deltaY < 0 ? 1.12 : 0.89;
+    var ns = clamp(scale * factor, MIN_SCALE, MAX_SCALE);
+    var ratio = ns / scale;
+    tx = mx - (mx - tx) * ratio;
+    ty = my - (my - ty) * ratio;
+    scale = ns;
+    apply();
+  }, { passive: false });
+
+  // ── Touch drag + pinch ──
+  var lastT = null;
+  container.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    lastT = Array.from(e.touches).map(function(t) { return { x: t.clientX, y: t.clientY }; });
+  }, { passive: false });
+
+  container.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    var cur = Array.from(e.touches).map(function(t) { return { x: t.clientX, y: t.clientY }; });
+    if (!lastT) { lastT = cur; return; }
+    var rect = container.getBoundingClientRect();
+
+    if (cur.length === 1 && lastT.length >= 1) {
+      tx += cur[0].x - lastT[0].x;
+      ty += cur[0].y - lastT[0].y;
+    } else if (cur.length >= 2 && lastT.length >= 2) {
+      var d0 = Math.hypot(lastT[1].x - lastT[0].x, lastT[1].y - lastT[0].y);
+      var d1 = Math.hypot(cur[1].x  - cur[0].x,  cur[1].y  - cur[0].y);
+      var ratio = d0 > 0 ? d1 / d0 : 1;
+      var ns = clamp(scale * ratio, MIN_SCALE, MAX_SCALE);
+      ratio = ns / scale;
+      // pivot at midpoint of two fingers
+      var mx = (cur[0].x + cur[1].x) / 2 - rect.left;
+      var my = (cur[0].y + cur[1].y) / 2 - rect.top;
+      tx = mx - (mx - tx) * ratio;
+      ty = my - (my - ty) * ratio;
+      scale = ns;
+      // also apply drag from finger-center movement
+      var cx0 = (lastT[0].x + lastT[1].x) / 2;
+      var cy0 = (lastT[0].y + lastT[1].y) / 2;
+      var cx1 = (cur[0].x  + cur[1].x)  / 2;
+      var cy1 = (cur[0].y  + cur[1].y)  / 2;
+      tx += cx1 - cx0;
+      ty += cy1 - cy0;
+    }
+    lastT = cur;
+    apply();
+  }, { passive: false });
+
+  container.addEventListener('touchend', function(e) {
+    lastT = Array.from(e.touches).map(function(t) { return { x: t.clientX, y: t.clientY }; });
+  });
+
+  // ── Reset button ──
+  document.getElementById('routeMapReset').addEventListener('click', function() {
+    tx = 0; ty = 0; scale = 1;
+    apply();
+  });
+})();
 </script>
 </body>
 </html>
